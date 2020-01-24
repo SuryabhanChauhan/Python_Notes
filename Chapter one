@@ -1,1 +1,162 @@
-this is chapter one
+Abstract Class:
+class is an abstract base class if its only purpose is to serve as a base class through inheritance.
+Python’s abc module provides support for defining a formal abstract base class.
+
+
+NameSpace:
+
+Slots
+Using a dictionary for attribute storage is very convenient, but it can mean a waste of space for objects, which have only a small amount of instance variables. The space consumption can become critical 
+when creating large numbers of instances. Slots are a nice way to work around this space consumption problem. Instead of having a dynamic dict that allows adding attributes to objects dynamically, 
+slots provide a static structure which prohibits additions after the creation of an instance
+
+Python provides a more direct mechanism for representing instance namespaces that avoids the use of an auxiliary dictionary. To use the streamlined representation
+for all instances of a class, that class definition must provide a class-level member named that is assigned to a fixed sequence of strings that serve as names slots for instance variables. For example, with our
+class, we would declare CreditCard the following:
+class CreditCard:
+slots = _customer , _bank , _account , _balance , _limit
+
+To promote greater efficiency in memory usage, we will use an explicit
+slots declaration in any nested classes for which we expect many instances.
+
+Name Resolution and Dynamic Dispatch:
+
+notice that the existence of a charge function in the PredatoryCreditCard class has the effect of overriding the version of that function that exists in the CreditCard namespace. In traditional object-oriented terminology,
+Python uses what is known as dynamic dispatch (or dynamic binding) to determine, at run-time, which implementation of a function to call based upon the type of the object upon which it is invoked. This is in contrast to 
+some languages that use static dispatching, making a compile-time decision as to which version of a function to call, based upon the declared type of a variable.
+
+Shallow and Deep Copying:
+an assignment statement foo = bar makes the name foo an alias for the object identified as bar. In this section, we consider the task of making a copy of an object, rather than an alias
+
+shallow copy
+palette = list(warmtones)
+In this case, we explicitly call the list constructor, sending the first list as a parameter.
+This causes a new list to be created, as shown in Figure 2.10; however, it is what is known as a shallow copy.
+
+
+Deep Copy
+
+Python provides a very convenient module, named copy, that can produce both shallow copies and deep copies of arbitrary objects.
+This module supports two functions: the copy function creates a shallow copy of its argument, and the deepcopy function creates a deep copy of its argument.
+palette = copy.deepcopy(warmtones)
+
+
+The Seven Functions:
+
+1.The Constant Function: it does not matter what the value of n is; f (n) will always be equal to the constant value c.
+f (n) = c
+
+2.The Logarithm Function: 
+f (n) = logb n, for some constant b > 1
+x = logb n if and only if bx = n
+
+By definition, logb1 = 0.
+
+Logarithm Rules:
+1. logb(ac) = logb a+logb c
+2. logb(a/c) = logb a−logb c
+3. logb(ac) = clogb a
+4. logb a = logd a/logd b
+5. blogd a = alogd b
+
+3. The Linear Function:
+f (n) = n
+
+4. The N-Log-N Function: This function grows a little more rapidly than the linear function and a lot less rapidly than the quadratic function
+f (n) = nlogn
+
+fastest possible algorithmsfor sorting n arbitrary values require time proportional to nlog n
+
+5. The Quadratic Function: quadratic function appears in the analysis of algorithms is that there are many algorithms that have nested loops
+f (n) = n2 = n*n
+
+6.The Cubic Function and Other Polynomials::
+f (n) = n3
+f (n) = a0+a1n+a2n2+a3n3 +· · ·+adnd
+
+7.The Exponential Function:
+f (n) = b power n
+
+Exponent Rules:
+1. (ba)c = bac
+2. babc = ba+c
+3. ba/bc = ba−c
+
+
+
+Geometric Sums:
+
+1+a+a pw(2)+· · ·+a pw(n) = (a power(n+1)−1/a−1)
+
+
+1+2+4+8+· · ·+2 pw(n−1) = 2 pw(n)−1
+this is the largest integer that can be represented in binary notation using n bits.
+
+
+growth rate of different functions:
+constant < logarithm < linear < n-log-n < quadratic < cubic < exponential
+
+
+The “Big-Oh” Notation:
+
+Let f (n) and g(n) be functions mapping positive integers to positive real numbers.
+We say that f (n) is O(g(n)) if there is a real constant c > 0 and an integer constant
+n0 ≥ 1 such that
+f (n) ≤ cg(n), for n ≥ n0.
+
+Big-Omega:
+Let f (n) and g(n) be functions mapping positive integers to positive real numbers.
+We say that f (n) is Ω(g(n)), pronounced “ f (n) is big-Omega of g(n),” if g(n)
+is O( f (n)), that is, there is a real constant c> 0 and an integer constant n0 ≥ 1 such
+that
+f (n) ≥ cg(n), for n ≥ n0.
+
+Big-Theta:
+is a notation that allows us to say that two functions grow at the same rate, up to constant factors. We say that f (n) is Θ(g(n)), pronounced “ f (n)
+is big-Theta of g(n),” if f (n) is O(g(n)) and f (n) is Ω(g(n)) , that is, there are real constants c1 > 0 and c2 > 0, and an integer constant n0 ≥ 1 such that
+c1g(n) ≤ f (n) ≤ c2g(n), for n ≥ n0.
+
+
+
+***First, note that the use of the big-Oh and related notations can be somewhat misleading should the constant factors they “hide” be very large. For example, while it is true
+that the function 10 pw(100) *n is O(n), if this is the running time of an algorithm being compared to one whose running time is 10nlog n, we should prefer the O(nlog n)-
+time algorithm, even though the linear-time algorithm is asymptotically faster. This preference is because the constant factor, 10 pw(10).
+Thus, even when using the big-Oh notation, we should at least be somewhat mindful of the constant factors and lower-order terms we are “hiding.”
+
+
+time complexities of the list's functions:
+
+len(data) --->O(1)
+data[j] ----->O(1) #The jth element of the list can be found, not by iterating through the list one element at a time, but by validating the index, and using it as an offset into the underlying array
+
+
+finding max in the array:
+
+find max function runs in O(n) time.
+
+If the sequence is given to us in random order, the probability that the jth element is the largest of the first j elements is 1/ j (assuming uniqueness). Hence, the expected number of times we
+update the biggest (including initialization) is Hn = Σnj =1 1/ j, which is known as the nth Harmonic number. It turns out (see Proposition B.16) that Hn is O(log n).
+Therefore, the expected number of times the biggest value is updated by find max on a randomly ordered sequence is O(logn).
+
+
+Prefix Averages:
+Namely, given a sequence S consisting of n numbers,
+we want to compute a sequence A such that A[ j] is the average of elements
+S[0], . . . ,S[ j], for j = 0, . . . ,n−1, that is,
+		j
+A[j] =(Σ S[i])/(j+1)
+		i=0
+
+
+
+recursion:
+
+In Python, each time a function (recursive or otherwise) is called, a structure known as an activation record or frame is created to store information about the progress of that invocation of the function.
+When the execution of a function leads to a nested function call, the execution of the former call is suspended and its activation record stores the place in the source code at which the flow of control 
+should continue upon return of the nested call.
+
+
+
+
+
+
