@@ -1,2 +1,19 @@
 **Low-Level Arrays**
-hjh
+
+The primary memory of a computer is composed of bits of information, and those bits are typically grouped into larger units that depend
+upon the precise system architecture. Such a typical unit is a byte, which is equivalent to 8 bits.
+
+A computer system will have a huge number of bytes of memory, and to keep track of what information is stored in what byte, the computer 
+uses an abstraction known as a memory address. In effect, each byte of memory is associated with a unique number that serves as its address.
+
+Despite the sequential nature of the numbering system, computer hardware is designed, in theory, so that any byte of the main memory can be efficiently accessed
+based upon its memory address. In this sense, we say that a computer’s main memory performs as random access memory (RAM). That is, 
+it is just as easy to retrieve byte #8675309 as it is to retrieve byte #309.
+
+Using the notation for asymptotic analysis, we say that any individual byte of memory can be stored or retrieved in O(1) time.
+
+In Python, each character is represented using the Unicode character set, and on most computing systems, Python internally represents each
+Unicode character with 16 bits (i.e., 2 bytes).
+formula to retrive any index value in O(1): start + cellsize*index.
+
+*Referential Arrays*:
