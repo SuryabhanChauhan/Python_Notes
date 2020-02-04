@@ -201,7 +201,41 @@ all values equal to zero. it is more efficient than building such a list increme
 
 python string class:
 
+patter matching : A naive implementation
+runs in O(mn) time case, because we consider the n−m+1 possible
+starting indices for the pattern, and we spend O(m) time at each starting position,
+checking if the pattern matches. however we have better algo which works in O(n)
 
+Composing Strings: 
+
+ex :large string named document, and our goal is to produce a new string, letters, that contains only the alphabetic characters
+of the original string.
+
+# WARNING: do not do this
+letters = # start with empty string
+for c in document:
+if c.isalpha( ):
+letters += c # concatenate alphabetic character
+
+the above code will give O(n*2) becasue
+Because strings are immutable, the command, letters += c, would presumably compute the concatenation, letters + c, as a new string 
+instance and then reassign the identifier, letters, to that result.
+ so 1+2+3+· · ·+n, and therefore O(n*2) time.
+ 
+ better approch:
+
+temp = [ ] # start with empty list
+for c in document:
+if c.isalpha( ):
+temp.append(c) # append alphabetic character
+letters = .join(temp) # compose overall result
+
+This approach is guaranteed to run in O(n) time.
+
+more better: 
+letters = .join([c for c in document if c.isalpha( )])
+and not even icluding temp list
+letters = .join(c for c in document if c.isalpha( ))
 
 
 
