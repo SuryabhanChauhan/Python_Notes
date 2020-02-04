@@ -17,3 +17,202 @@ Unicode character with 16 bits (i.e., 2 bytes).
 formula to retrive any index value in O(1): start + cellsize*index.
 
 *Referential Arrays*:
+[ Rene , Joseph , Janet , Jonas , Helen , Virginia , ... ]
+To represent such a list with an array, Python must adhere to the requirement that
+each cell of the array use the same number of bytes. Yet the elements are strings,
+and strings naturally have different lengths. Python could attempt to reserve enough
+space for each cell to hold the maximum length string (not just of currently stored
+strings, but of any string we might ever want to store), but that would be wasteful.
+Instead, Python represents a list or tuple instance using an internal storage
+mechanism of an array of object references. At the lowest level, what is stored
+is a consecutive sequence of memory addresses at which the elements of the sequence
+reside
+
+*Compact Arrays in Python*:
+
+strings are represented using
+an array of characters (not an array of references). We will refer to this more direct
+representation as a compact array because the array is storing the bits that represent
+the primary data (characters, in the case of strings).
+
+S A M P L E
+0 1 2 3 4 5
+
+Compact arrays have several advantages over referential structures in terms
+of computing performance. Most significantly, the overall memory usage will be
+much lower for a compact structure because there is no overhead devoted to the
+explicit storage of the sequence of memory references.
+Another important advantage to a compact structure for high-performance computing
+is that the primary data are stored consecutively in memory.
+
+A referential structure will typically use 64-bits for the memory address stored in the array
+
+Python allows you to query the actual number of bytes being used for the primary storage of any object. This is done using the 
+getsizeof function of the sys module. On our system, the size of a typical int object requires 14 bytes of memory (well beyond the 
+4 bytes needed for representing the actual 64-bit number). In all, the list will be using 18 bytes per entry, rather than the 4 bytes 
+that a compact list of integers would require.
+
+To create compact arrays we have a module named array, That module defines a class, also named array.
+The constructor for the array class requires a type code as a first parameter, which is a character that designates the type of data
+that will be stored in the array. 
+The type code allows the interpreter to determine precisely how many bits are needed per element of the array.
+ex: primes = array( i , [2, 3, 5, 7, 11, 13, 17, 19]) where i is code for signed integer
+
+The type codes supported by the array module:
+Code C Data Type Typical Number of Bytes
+b signed char 1
+B unsigned char 1
+u Unicode char 2 or 4
+h signed short int 2
+H unsigned short int 2
+i signed int 2 or 4
+I unsigned int 2 or 4
+l signed long int 4
+L unsigned long int 4
+f float 4
+d float 8
+
+The array module does not provide support for making compact arrays of userdefined data types. Compact arrays of such structures 
+can be created with the lowerlevel support of a module named ctypes.
+
+**5.3 Dynamic Arrays and Amortization**:
+Although the Python list class provides a highly optimized implementation of dynamic arrays, 
+below is the approch how it might me achecvied:
+
+If an element is appended to a list at a time when the underlying array is full, we perform
+the following steps:
+1. Allocate a new array B with larger capacity.
+2. Set B[i] = A[i], for i = 0, . . . ,n−1, where n denotes current number of items.
+3. Set A = B, that is, we henceforth use B as the array supporting the list.
+4. Insert the new element in the new array.
+
+*Amortization*:
+factor by which we are going to increse the size of the array
+
+1. double the size once full: O(n) and best
+
+2. Geomatric increment of the array size(size double is also kinda GP with base 2): O(1), When choosing the geometric base, there exists a 
+tradeoff between run-time efficiency and memory usage. With a base of 2 (i.e., doubling the array), if the last insertion causes a resize
+event, the array essentially ends up twice as large as it needs to be. If we instead increase the array by only 25% of its current size 
+(i.e., a geometric base of 1.25), we do not risk wasting as much memory in the end, but there will be more intermediate resize events
+along the way.
+
+3. AP: To avoid reserving too much space at once, it might be tempting to implement a dynamic array with a strategy in which a constant 
+number of additional cells are reserved each time an array is resized. Unfortunately, the overall performance of such a strategy is 
+significantly worse.
+Performing a series of n append operations on an initially empty dynamic array using a fixed increment with each resize takes Ω(n2) time.
+
+*Memory Usage and Shrinking an Array*
+
+Another consequence of the rule of a geometric increase in capacity when appendingto a dynamic array is that the final array size is 
+guaranteed to be proportional to the overall number of elements. That is, the data structure uses O(n) memory.
+
+If a container, such as a Python list, provides operations that cause the removal of one or more elements, greater care must be taken 
+to ensure that a dynamic array guarantees O(n) memory usage. A robust implementation of such a data structure will shrink the underlying
+array, on occasion, while maintaining the O(1) amortized bound on individual operations.
+
+one strategy in which the array capacity is halved whenever the number of actual element falls below one fourth of that capacity, 
+thereby guaranteeing that the array capacity is atmost four times the number of elements.
+
+
+**Python’s List Class**:
+
+
+1 from time import time # import time function from time module
+2 def compute average(n):
+3 ”””Perform n appends to an empty list and return average time elapsed.”””
+4 data = [ ]
+5 start = time( ) # record the start time (in seconds)
+6 for k in range(n):
+7 data.append(None)
+8 end = time( ) # record the end time (in seconds)
+9 return (end − start) / n # compute average per operation
+
+n 100 1,000 10,000 100,000 1,000,000 10,000,000 100,000,000
+μs 0.219 0.158 0.164 0.151 0.147 0.147 0.149
+
+Taken as a whole, there seems clear evidence that the amortized time for each append is independent of n.
+
+**Efficiency of Python’s Sequence Types**:
+
+We note that tuples are typically more memory efficient than lists because they are immutable; therefore, there is no need for an 
+underlying dynamic array with surplus capacity.
+
+asymptotic efficiency of the nonmutating behaviors of the list and tuple classes
+
+Operation   Running Time
+len(data)                    O(1)
+data[j]                      O(1)
+data.count(value)            O(n)
+data.index(value)            O(k+1)
+value in data                O(k+1)
+data1 == data2               O(k+1) 
+(similarly !=, <, <=, >, >=)
+data[j:k]                    O(k− j+1)
+data1 + data2                O(n1 +n2)
+c*data                       O(cn)
+
+mutating behaviour asymtotic analysis:
+
+Operation              Running Time
+data[j] = val          O(1)
+data.append(value)     O(1)∗
+data.insert(k, value)  O(n−k+1)∗ #it insert value at kth index and shift rest of the items to right
+data.pop()             O(1)∗  # * because sometime shrinking of the array might happen whih we are ignoring
+data.pop(k)            O(n−k)∗
+del data[k]            O(n−k)∗
+data.remove(value)     O(n)∗
+data1.extend(data2)    O(n2)∗ n2 means legth od data set 2
+data1 += data2         O(n2)∗
+data.reverse( )        O(n)
+data.sort( )           O(nlog n)
+∗amortized: to resizing of array is happing while performing the actions
+
+adding element to the list: 
+There are two complicating factors in analyzing
+the efficiency of such an operation (insert ). First, we note that the addition of one element
+may require a resizing of the dynamic array. That portion of the work requires Ω(n)
+worst-case time but only O(1) amortized time, as per append.
+Overall this leads to an amortized O(n−k+1) performance
+for inserting at index k.
+
+removing element from the list:
+that allows the caller to
+specify the value that should be removed (not the index at which it resides). Formally,
+it removes only the first occurrence of such a value from a list, or raises a
+ValueError if no such value is found.
+
+every call requires Ω(n) time. One part of the process searches from the beginning until finding the value at
+index k, while the rest iterates from k to the end in order to shift elements leftward
+
+
+construting a new list:
+There are several syntaxes for constructing new lists. In almost all cases, the asymptotic
+efficiency of the behavior is linear in the length of the list that is created. However,
+as with the case in the preceding discussion of extend, there are significant
+differences in the practical efficiency.
+
+ex: list comprehension syntax is faster than building a list by repeteadly appending
+Similarly, it is a common Python idiom to initialize a list of constant values
+using the multiplication operator, as in [0] n to produce a list of length n with
+all values equal to zero. it is more efficient than building such a list incrementally.
+
+
+
+python string class:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
