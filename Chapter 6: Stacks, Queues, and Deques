@@ -1,0 +1,75 @@
+**Stacks** :
+stack is an abstract
+data type (ADT) such that an instance S supports the following two methods
+A stack is a collection of objects that are inserted and removed according to the last-in, first-out (LIFO) principle.
+
+ex: browser saving recently visited sites.
+    text editors for undo functionality depend upon stack
+    
+stack is an abstract data type (ADT) such that an instance S supports the following two methods:
+
+S.push(e) : Add element e to the top of stack S.
+S.pop()   : Remove and return the top element from the stack S; an error occurs if the stack is empty.
+
+accessor methods:
+S.top()       : Return a reference to the top element of stack S, without removing it; an error occurs if the stack is empty.
+S.is empty( ) : Return True if stack S does not contain any elements. len(S): Return the number of elements in stack S; in Python, we
+                implement this with the special method len.
+                
+*Simple Array-Based Stack Implementation*:
+Programmer can directly use list for the stack but that would break the abstraction that the stack ADT represents.
+Also, the terminology used by the list class does not precisely align with traditional nomenclature for a stack ADT, 
+like list use append while stakc use push.
+
+*we will use list for internal storage while providing a public interface consistent with a stack.
+
+The Adapter Pattern: 
+The adapter design pattern applies to any context where we effectively want to modify an existing class so that its methods match those 
+of a related, but different, class or interface.
+
+In stack ADT we will be adpting list class:
+stack method  Realization with Python list
+S.push(e)       L.append(e)
+S.pop( )        L.pop( )
+S.top()         L[−1]
+S.is empty( )   len(L) == 0
+len(S)          len(L)
+
+first creating a new exception class,as we want to raise differnt error for the stack. this class will be a sub class of exception class
+
+class Empty(Exception):
+'''Error attempting to access an element from an empty container.'''
+  pass
+  
+Analysis:
+
+Operation Running Time
+S.push(e)     O(1)∗
+S.pop()       O(1)∗
+S.top()       O(1)
+S.is empty()  O(1)
+len(S)        O(1)
+∗amortized
+
+space complexity: O(n)
+
+*As an alternate model for a stack, we might wish for the constructor to accept a parameter specifying the maximum capacity of a stack
+and to initialize the data member to a list of that length.
+
+stack uses:
+
+1. Reversing Data Using a Stack:
+Stack can be used as a general tool to reverse a data sequence.
+ex: we might wish to print lines of a file in reverse order in order to display a data set in decreasing order rather than increasing 
+order
+
+One technical detail worth noting is that we intentionally strip trailing newlines from lines as they are read, and then re-insert 
+newlines after each line when writing the resulting file. Our reason for doing this is to handle a special case in which the original
+file does not have a trailing newline for the final line.
+
+2. Matching Delimiters in program: complexity O(n)
+
+3. Matching Tags in a Markup Language : complexity O(n)
+
+
+ 
