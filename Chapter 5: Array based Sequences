@@ -217,16 +217,15 @@ for c in document:
 if c.isalpha( ):
 letters += c # concatenate alphabetic character
 
-the above code will give O(n*2) becasue
-Because strings are immutable, the command, letters += c, would presumably compute the concatenation, letters + c, as a new string 
-instance and then reassign the identifier, letters, to that result.
+the above code will give O(n*2), Because strings are immutable, the command, letters += c, would presumably compute the concatenation, 
+letters + c, as a new string instance and then reassign the identifier, letters, to that result.
  so 1+2+3+· · ·+n, and therefore O(n*2) time.
  
  better approch:
 
 temp = [ ] # start with empty list
 for c in document:
-if c.isalpha( ):
+if c.isalpha():
 temp.append(c) # append alphabetic character
 letters = .join(temp) # compose overall result
 
@@ -236,6 +235,34 @@ more better:
 letters = .join([c for c in document if c.isalpha( )])
 and not even icluding temp list
 letters = .join(c for c in document if c.isalpha( ))
+
+**Using Array-Based Sequences**
+
+*The Insertion-Sort Algorithm*:
+complexity: O(n*2)
+
+*cyrpto*
+ord(c): function takes a one-character string as a parameter and returns the integer code point for that character. 
+chr(j): Conversely, the function takes an integer and returns its associated one-character string.
+ex. ord('A') = 66   chr(66) = A
+
+
+**Multidimensional Data Sets**
+
+creating a list with [0]*n is correct but if we will create 2D lis with the same approch
+ie. ([0]*c)*r where c is no of columnsa nd r is no of rows
+this will give you the r time of the same list like [1,2,3]*2 = [1,2,3,1,2,3] nut what we want is[[1,2,3], [1,2,3]]
+
+A better  but flawed approch in ; [[0]*c]*r
+this will generate the list correctly but all r entries of the list known as data are references to the same
+instance of a list of c zeros.
+
+To properly initialize a two-dimensional list, we must ensure that each cell of the primary list refers to an independent instance of a 
+secondary list.
+data = [ [0] c for j in range(r) ]
+
+
+
 
 
 
