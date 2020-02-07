@@ -58,8 +58,7 @@ and to initialize the data member to a list of that length.
 
 stack uses:
 
-1. Reversing Data Using a Stack:
-Stack can be used as a general tool to reverse a data sequence.
+1. Reversing Data Using a Stack: Stack can be used as a general tool to reverse a data sequence.
 ex: we might wish to print lines of a file in reverse order in order to display a data set in decreasing order rather than increasing 
 order
 
@@ -72,4 +71,52 @@ file does not have a trailing newline for the final line.
 3. Matching Tags in a Markup Language : complexity O(n)
 
 
+**QUEUES**:
+
+Queue is a collection of objects that are inserted and removed according to the first-in, first-out (FIFO) principle.
+used in call centers, networked printer, or a Web server responding to requests.
+
+Formally, the queue abstract data type defines a collection that keeps objects in a sequence, where element access and deletion are 
+restricted to the first element inthe queue, and element insertion is restricted to the back of the sequence.
+
+The queue abstract data type (ADT) supports the following two fundamental methods for a queue Q:
+
+Q.enqueue(e): Add element e to the back of queue Q.
+Q.dequeue(): Remove and return the first element from queue Q; an error occurs if the queue is empty.
+
+supporting methods:
+Q.first()    : Return a reference to the element at the front of queue Q, without removing it; an error occurs if the queue is empty.
+Q.is empty() : Return True if queue Q does not contain any elements.
+len(Q)       : Return the number of elements in queue Q; in Python,we implement this with the special method len.
+
+ 
+Array-Based Queue Implementation:
+It may be very tempting to use a similar approach like stack for supporting the queue ADT. We could enqueue element e by calling 
+append(e) to add it to the end of the list. We could use the syntax pop(0), as opposed to pop( ), to intentionally remove the first 
+element from the list when dequeuing.
+but it's not efficient becasue every time while dequeueing we have to pop the element from zero index which will lead to O(n) complexity
+as we need to shift the other values to the left.
+
+To avoid the pop(0), We can replace the dequeued entry in the array with a reference to None, andmaintain an explicit variable f to 
+store the index of the element that is currently at the front of the queue. Such an algorithm for dequeue would run in O(1) time.
+
+But, if we repeatedly enqueue a new element and then dequeue another (allowing thefront to drift rightward). Over time, the size of the
+underlying list would grow to O(m) where m is the total number of enqueue operations since the creation of the queue, rather than the 
+current number of elements in the queue.
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  
