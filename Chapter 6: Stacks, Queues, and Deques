@@ -91,6 +91,7 @@ len(Q)       : Return the number of elements in queue Q; in Python,we implement 
 
  
 Array-Based Queue Implementation:
+
 It may be very tempting to use a similar approach like stack for supporting the queue ADT. We could enqueue element e by calling 
 append(e) to add it to the end of the list. We could use the syntax pop(0), as opposed to pop( ), to intentionally remove the first 
 element from the list when dequeuing.
@@ -104,14 +105,43 @@ But, if we repeatedly enqueue a new element and then dequeue another (allowing t
 underlying list would grow to O(m) where m is the total number of enqueue operations since the creation of the queue, rather than the 
 current number of elements in the queue.
 
+In developing a more robust queue implementation, we allow the front of the queue to drift rightward, and we allow the contents of the 
+queue to “wrap around” the end of an underlying array.
+this we will acheive by defining a default size list in the start and then doubling the size of the underlying list whenever the 
+existing list is full.
+
+A more robust approach will be to reduce the array to half of its current size, whenever the number of elements stored in it falls below one 
+fourth of its capacity.
+
+Garbage Collection:
+The process by which Python periodically frees and reclaims blocks of memory that no longer are in use is called Garbage Collection.
+
+
+Operation       Running Time
+Q.enqueue(e)    O(1)∗
+Q.dequeue( )    O(1)∗
+Q.first()       O(1)
+Q.is empty( )   O(1)
+len(Q)          O(1)
+
+**Double-Ended Queues**
+Queue-like data structure that supports insertion and deletion at both the front and the back of the queue. 
+Such a structure is called a double ended queue, or deque, which is usually pronounced “deck”.
  
+supports the following methods:
+D.add_first(e)      : Add element e to the front of deque D.
+D.add_last(e)       : Add element e to the back of deque D.
+D.delete_first()    : Remove and return the first element from deque D; an error occurs if the deque is empty.
+D.delete_last()     : Remove and return the last element from deque D; an error occurs if the deque is empty.
+
+accessors:
+D.first()     : Return (but do not remove) the first element of deque D; an error occurs if the deque is empty.
+D.last()      : Return (but do not remove) the last element of deque D;an error occurs if the deque is empty.
+D.is empty( ) : Return True if deque D does not contain any elements.
+len(D)        : Return the number of elements in deque D; in Python,we implement this with the special method len .
  
- 
- 
- 
- 
- 
- 
+Implementing a Deque with a Circular Array:
+
  
  
  
