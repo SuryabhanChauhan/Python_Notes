@@ -1,1 +1,86 @@
+Some disadvantages od array based class(List):
+
+1. The length of a dynamic array might be longer than the actual number of elements that it stores.
+2. Amortized bounds for operations may be unacceptable in real-time systems.
+3. Insertions and deletions at interior positions of an array are expensive.
+
+So linked list is alternative to an array based sequence
+
+**Singly Linked Lists**
+A singly linked list, in its simplest form, is a collection of nodes that collectively form a linear sequence.
+Each node stores a reference to an object that is an element of the sequence, as well as a reference to the next node of the list
+
+linked list is that it does not have a predetermined fixed size; it uses space proportionally to its current number of elements.
+
+The first and last node of a linked list are known as the head and tail of the list, respectively.
+
+We can identify the tail as the node having None as its next reference.
+
+the process of traversing a list is also known as link hopping or pointer hopping.
+
+Minimally, the linked list instance must keep a reference to the head of the list. Without an explicit reference to the head, there
+would be no way to locate that node (or indirectly, any others). There is not an absolute need to store a direct reference to the tail 
+of the list, as it could otherwise be located by starting at the head and traversing the rest of the list. However, storing an explicit 
+reference to the tail node is a common convenience to avoid such a traversal. In similar regard, it is common for the linked list 
+instance to keep a count of the total number of nodes that comprise the list (commonly described as the size of the list), to avoid the
+need to traverse the list to count the nodes.
+
+*Inserting an Element at the Head of a Singly Linked List:
+
+create a new node, set its element to the new element, set its next link to refer to the current head, and then set the list’s head to 
+point to the new node.
+
+pseudo code:
+
+Algorithm add first(L,e):
+newest = Node(e)      {create new node instance storing reference to element e}
+newest.next = L.head  {set new node’s next to reference the old head node}
+L.head = newest       {set variable head to reference the new node}
+L.size = L.size+1     {increment the node count}
+
+*Inserting an Element at the Tail of a Singly Linked List:
+
+we create a new node, assign its next reference to None, set the next reference of the tail to point to this new node, and then update 
+the tail reference itself to this new node.
+
+but for above approch we should have pointer to out tail node otherwise we need to traverse the whole list in order to get the tail node
+
+pseudo code:
+
+Algorithm add last(L,e):
+newest = Node(e)      {create new node instance storing reference to element e}
+newest.next = None    {set new node’s next to reference the None object}
+L.tail.next = newest  {make old tail node point to new node}
+L.tail = newest       {set variable tail to reference the new node}
+L.size = L.size+1     {increment the node count}
+
+*Removing an Element from a Singly Linked List:
+
+removing the head:
+
+Algorithm remove first(L):
+if L.head is None then
+  Indicate an error: the list is empty.
+L.head = L.head.next  {make head point to next node (or None)}
+L.size = L.size−1     {decrement the node count}
+
+removing the tail is difficult Even if we maintain a tail reference directly to the last node of the list, we must be able to access 
+the node before the last node in order to remove the last node.and in order to do so we have to traverse the whole list which is time
+consuming. to support this kind of operations more efficiently we will use doubly linked list
+
+*Implementing a Stack with a Singly Linked List:
+In designing such an implementation, we need to decide whether to model the top of the stack at the head or at the tail of the list.
+
+Operation Running Time
+S.push(e)    O(1)
+S.pop()      O(1)
+S.top()      O(1)
+len(S)       O(1)
+S.is empty() O(1)
+
+
+*Implementing a Queue with a Singly Linked List
+
+
+**Circularly Linked Lists**:
 
