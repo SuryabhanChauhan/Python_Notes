@@ -83,4 +83,20 @@ S.is empty() O(1)
 
 
 **Circularly Linked Lists**:
+Even though a circularly linked list has no beginning or end, per se, we must maintain a reference to a particular node in order to make
+use of the list. We use the identifier current to describe such a designated node. By setting current = current.next, we can effectively
+advance through the nodes of the list.
 
+*Round-Robin Schedulers:
+using general linked queue ADT:
+1. e = Q.dequeue()
+2. Service element e
+3. Q.enqueue(e)
+so there are unnecessary enqueing and dequeuing happning here. One node is removed from the list, with appropriate adjustments to the 
+head of the list and the size decremented, and then a new node is created to reinsert at the tail of the list and the size is 
+incremented.
+If using a circularly linked list, the effective transfer of an item from the “head” of the list to the “tail” of the list can be 
+accomplished by advancing a reference that marks the boundary of the queue.
+using circular queue:
+1. Service element Q.front()
+2. Q.rotate()
