@@ -100,3 +100,52 @@ accomplished by advancing a reference that marks the boundary of the queue.
 using circular queue:
 1. Service element Q.front()
 2. Q.rotate()
+
+
+**Doubly Linked Lists**:
+
+disadvantages with the singly linked list is that you can not delete an arbitrary node from an interior position of the list if only 
+given a reference to that node, because we cannot determine the node that immediately precedes the node to be deleted (yet, that node 
+needs to have its next reference updated).
+
+so we define a new linked list where evry node point to its next as well as previous node, Such a structure is known as a doubly linked 
+list. These lists allow a greater variety of O(1)-time update operations, including insertions and deletions at arbitrary positions
+within the list.
+
+In order to avoid some special cases when operating near the boundaries of a doubly linked list, it helps to add special nodes at both 
+ends of the list: a header node at the beginning of the list, and a trailer node at the end of the list. These “dummy” nodes are known 
+as sentinels (or guards), and they do not store elements of the primary sequence.
+
+When using sentinel nodes, an empty list is initialized so that the next field of the header points to the trailer, and the prev field 
+of the trailer points to the header.
+
+*sentinels greatly simplifies the logic of our operations*
+Most notably, the header and trailer nodes never change—only the nodes between them change.
+
+
+Inserting and Deleting with a Doubly Linked List:
+
+New element will be added between the header and the node that is currently after the header. nodes can be added in between also
+To delete a node we will by pass that node by directly connecting the previous and next node.
+
+
+Basic Implementation of a Doubly Linked List:
+see the code Doubly_LL.py
+
+Implementing a Deque with a Doubly Linked List:
+
+With an array-based implementation, we achieve all operations in amortized O(1) time, due to the occasional need to resize the array. 
+With an implementation based upon a doubly linked list, we can achieve all deque operation in worst-case O(1) time.
+We implement LinkedDeque class that inherits from the DoublyLinkedBase class.
+we do not implement explicit init, len, is_empty function as parent class is already having them.
+
+**The Positional List ADT**:
+
+
+
+
+
+
+
+
+
