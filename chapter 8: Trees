@@ -8,5 +8,5 @@ Two nodes that are children of the same parent are siblings.
 A node v is external if v has no children. External nodes are also known as leaves.
 A node v is internal if it has one or more children.
 
-#Edge: An edge of tree T is a pair of nodes (u,v) such that u is the parent of v, or vice versa.
+# Edge: An edge of tree T is a pair of nodes (u,v) such that u is the parent of v, or vice versa.
 Path: A path of T is a sequence of nodes such that any two consecutive nodes in the sequence form an edge.
