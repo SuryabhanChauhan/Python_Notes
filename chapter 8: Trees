@@ -161,15 +161,84 @@ f (p) be the integer defined as follows.
   • If p is the root of T, then f (p) = 0.
   • If p is the left child of position q, then f (p) = 2 f (q)+1.
   • If p is the right child of position q, then f (p) = 2 f (q)+2.
+  • parent of p has index = (f(p)−1)/2
+ 
+  
   
 The numbering function f is known as a level numbering of the positions in a binary tree T, for it numbers the positions on each level 
 of T in increasing order from left to right. If some node have no children even then also numbring function will assume that their 
 are children and do the numbering of next nodes accroding to that.
 
+Binary tree will be saved in the list where position will be represented by the index and values of the node will be saved at that index
 
+The space usage of an array-based representation depends greatly on the shape of the tree. Let n be the number of nodes of T, and let 
+fM be the maximum value of f (p) over all the nodes of T. The array A requires length N = 1+ fM, since elements range from A[0] to 
+A[ fM]. Note that A may have a number of empty cells that do not refer to existing nodes of T. In fact, in the worst case, N = 2n −1.
+
+A class of binary trees, called “heaps” for which N = n. Thus, in spite of the worst-case space usage, there are applications for which
+the array representation of a binary tree is space efficient. 
+Still, for general binary trees, the exponential worst-case space requirement of this representation is prohibitive.
+
+Another drawback of an array representation is that some update operations for trees cannot be efficiently supported. 
+For example, deleting a node and promoting its child takes O(n) time because it is not just the child that moves locations within
+the array, but all descendants of that child.
+
+
+***Linked Structure for General Trees:
+
+For a general tree, there is no a priori limit on the number of children that a node may have. A natural way to realize a general tree 
+T as a linked structure is to have each node store a single container of references to its children.
+
+Operation                     Running Time
+len, is_empty                 : O(1)
+root, parent, is_root,is_leaf : O(1)
+children(p)                   : O(cp +1)
+depth(p)                      : O(dp +1)
+height                        : O(n)
+
+ **************************************************Tree Traversal Algorithms************************************************************
  
+A traversal of a tree T is a systematic way of accessing, or “visiting,” all the positions of T.
+
+** pre-post order traversal
+
+*preorder traversal : In a preorder traversal of a tree T, the root of T is visited first and then the subtrees
+rooted at its children are traversed recursively.
+
+Algorithm preorder(T, p):
+  perform the “visit” action for position p
+  for each child c in T.children(p) do
+    preorder(T, c)
+
+*Postorder Traversal: it recursively traverses the subtrees rooted at the children of the root first, and then visits the root
+
+Algorithm postorder(T, p):
+ for each child c in T.children(p) do
+    postorder(T, c) {recursively traverse the subtree rooted at c}
+ perform the “visit” action for position p
 
 
+Running-Time Analysis:
 
+At each position p, the nonrecursive part of the traversal algorithm requires time O(cp+1), where cp is the number of children of p, 
+under the assumption that the “visit” itself takes O(1) time. By Proposition 8.5, the overall running time for the traversal of tree T 
+is O(n), where n is the number of positions in the tree. This running time is asymptotically optimal since the traversal must visit all 
+the n positions of the tree.
 
+**Breadth-First Tree Traversal:
+
+another common approach is to traverse a tree so that we visit all the positions at depth d before we visit the positions at depth d +1.
+Such an algorithm is known as a breadth-first traversal.
+
+The process is not recursive, since we are not traversing entire subtrees at once. We use a queue to produce a FIFO (i.e., first-in 
+first-out) semantics for the order in which we visit nodes. The overall running time is O(n), due to the n calls to enqueue and n calls
+to dequeue.
+
+Algorithm breadthfirst(T):
+ Initialize queue Q to contain T.root( )
+ while Q not empty do
+  p = Q.dequeue( ) {p is the oldest entry in the queue}
+  perform the “visit” action for position p
+  for each child c in T.children(p) do
+   Q.enqueue(c) {add p’s children to the end of the queue for later visits}
 
