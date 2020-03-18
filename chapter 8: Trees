@@ -242,3 +242,7 @@ Algorithm breadthfirst(T):
   for each child c in T.children(p) do
    Q.enqueue(c) {add p’s children to the end of the queue for later visits}
 
+**Inorder Traversal of a Binary Tree: This traversal is specifically for a binary tree.
+
+
+
