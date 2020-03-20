@@ -244,5 +244,23 @@ Algorithm breadthfirst(T):
 
 **Inorder Traversal of a Binary Tree: This traversal is specifically for a binary tree.
 
+we visit a position between the recursive traversals of its left and right subtrees.
 
+Algorithm inorder(p):
+            if p has a left child lc then
+               inorder(lc)                      {recursively traverse the left subtree of p}
+               
+            perform the “visit” action for position p
+            
+            if p has a right child rc then
+               inorder(rc)                       {recursively traverse the right subtree of p}
+
+When using a binary tree to represent an arithmetic expression, the inorder traversal visits positions in a 
+consistent order with the standard representation of the expression
+
+*************************************************** Binary Search Tree ***************************************************************
+A binary search tree for S is a binary tree T such that, for each position p of T:
+• Position p stores an element of S, denoted as e(p).
+• Elements stored in the left subtree of p (if any) are less than e(p).
+• Elements stored in the right subtree of p (if any) are greater than e(p).
 
