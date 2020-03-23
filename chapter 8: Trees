@@ -196,10 +196,10 @@ children(p)                   : O(cp +1)
 depth(p)                      : O(dp +1)
 height                        : O(n)
 
- **************************************************Tree Traversal Algorithms************************************************************
+ Tree Traversal Algorithms 
  
 A traversal of a tree T is a systematic way of accessing, or “visiting,” all the positions of T.
-
+ 
 ** pre-post order traversal
 
 *preorder traversal : In a preorder traversal of a tree T, the root of T is visited first and then the subtrees
@@ -258,9 +258,65 @@ Algorithm inorder(p):
 When using a binary tree to represent an arithmetic expression, the inorder traversal visits positions in a 
 consistent order with the standard representation of the expression
 
-*************************************************** Binary Search Tree ***************************************************************
+ Binary Search Tree 
 A binary search tree for S is a binary tree T such that, for each position p of T:
 • Position p stores an element of S, denoted as e(p).
 • Elements stored in the left subtree of p (if any) are less than e(p).
 • Elements stored in the right subtree of p (if any) are greater than e(p).
+
+
+Applications of Tree Traversals:
+1. To Produce table of content
+2. Parenthetic Representations of a Tree
+3. Computing Disk Space: see the code
+
+Parenthetic Representations of a Tree: The parenthetic string  representation P(T) of tree T is recursively defined as follows. 
+If T consists of a single position p, then
+P(T) = str(p.element()).
+Otherwise, it is defined recursively as,
+P(T) = str(p.element())+ '(' +P(T1)+ ', '+ · · · + , +P(Tk)+')'
+where p is the root of T and T1,T2, . . . ,Tk are the subtrees rooted at the children of p, which are given in order if T is an ordered 
+tree.
+
+like : Electronics R’Us (R&D, Sales (Domestic, International (Canada,S. America, Overseas (Africa, Europe, Asia, Australia))),
+Purchasing, Manufacturing (TV, CD, Tuner))
+
+
+ Euler Tours and the Template Method Pattern 
+
+Euler tour traversal: it is a more general framework for implementing tree traversals
+
+The Euler tour traversal of a general tree T can be informally defined as a “walk” around T, where we start by going from the root 
+toward its leftmost child, viewing the edges of T as being “walls” that we always keep to our left.
+
+The complexity of the walk is O(n)
+
+To unify the concept of preorder and postorder traversals, we can think of there being two notable “visits” to each position p:
+• A “pre visit” occurs when first reaching the position, that is, when the walk passes immediately left of the node in our visualization
+• A “post visit” occurs when the walk later proceeds upward from that position,that is, when the walk passes to the right of the node 
+  in our visualization.
+  
+Algorithm eulertour(T, p):
+            perform the “pre visit” action for position p
+            for each child c in T.children(p) do
+                        eulertour(T, c) {recursively tour the subtree rooted at c}
+            perform the “post visit” action for position p
+            
+The Template Method Pattern:
+
+To provide a framework that is reusable and adaptable, we rely on an interesting object-oriented software design pattern, the template 
+method pattern. The template method pattern describes a generic computation mechanism that can be specialized for a particular 
+application by redefining certain steps. To allow customization, the primary algorithm calls auxiliary functions known as hooks at 
+designated steps of the process.
+In the context of an Euler tour traversal, we define two separate hooks, a previsit hook that is called before the subtrees are traversed, and a postvisit hook that is
+called after the completion of the subtree traversals.
+
+Our implementation will take the form of an EulerTour class that manages the process, and defines trivial definitions for the hooks that do 
+nothing. The traversal can be customized by defining a subclass of EulerTour and overriding one or both hooks to provide specialized
+behavior.
+
+#see the code
+
+
+
 
