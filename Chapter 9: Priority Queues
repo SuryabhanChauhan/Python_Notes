@@ -1,0 +1,71 @@
+
+Queue ADT works on FIFo principle but In practice, there are many applications in which a queue-like structure is used to manage 
+objects that must be processed in some way, but for which the first-in, first-out policy does not suffice.
+Like: Air traffic control where instead of FIFO landing of plan depend upon many factors like, reaming fuel, emergency, waiting time,
+distance from runway etc.
+
+Priority queue is a collection of prioritized elements that allows arbitrary element insertion, and allows the removal of the element 
+that has first priority.
+When an element is added to a priority queue, the user designates its priority by providing an associated key. The element with the 
+minimum key will be the next to be removed from the queue.
+
+The Priority Queue ADT: 
+
+Methods supported by P Queue:
+ 
+P.add(k, v)   : Insert an item with key k and value v into priority queue P.
+P.min()       : Return a tuple, (k,v), representing the key and value of an item in priority queue P with minimum key 
+                (but do not remove the item); an error occurs if the priority queue is empty.
+P.remove_min(): Remove an item with minimum key from priority queue P, and return a tuple, (k,v), 
+                representing the key and value of the removed item; an error occurs if the priority queue is empty.
+P.is_empty()  : Return True if priority queue P does not contain any items.
+len(P)        : Return the number of items in priority queue P.
+
+A priority queue may have multiple entries with equivalent keys, in which case methods min and remove min may report an arbitrary choice 
+of item having minimum key.
+
+Initial model we will consider that key remains fixed
+
+ Implementing a Priority Queue 
+
+First we create a base class which will have a item composite for the key value pair.
+
+Then we will create another class for the actual implementation.
+
+Implementation using unsorted list:
+
+In our first concrete implementation of a priority queue, we store entries within an unsorted list.
+For internal storage, key-value pairs are represented as composites, using instances of the inherited Item class.
+
+These items are stored within a PositionalList, identified as the data member of our class. We assume that the positional list is 
+implemented with a doubly-linked list,x` so that all operations of that ADT execute in O(1) time.
+
+Because the items are not sorted, we must inspect all entries to find one with a minimum key.
+Due to the loop for finding the minimum key, both min and remove_min methods run in O(n) time, where n is the
+number of entries in the priority queue
+
+
+Implementation using sorted list:
+
+An alternative implementation of a priority queue uses a positional list, yet maintaining entries sorted by nondecreasing keys. 
+This ensures that the first element of the list is an entry with the smallest key.
+
+The implementation of min and remove_min are rather straightforward given knowledge that the first element of a list has a minimum key.
+
+This benefit comes at a cost, however, for method add now requires that we scan the list to find the appropriate position to insert the
+new item. Our implementation starts at the end of the list, walking backward until the new key is smaller than an existing item; 
+in the worst case, it progresses until reaching the front of the list. Therefore, the add method takes O(n)
+
+Operation   Unsorted List   Sorted List
+len         O(1)            O(1)
+is_empty    O(1)            O(1)
+add         O(1)            O(n)
+min         O(n)            O(1)
+remove_min  O(n)            O(1)
+
+
+ HEAPS 
+
+
+
+
