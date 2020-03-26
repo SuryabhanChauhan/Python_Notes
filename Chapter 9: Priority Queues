@@ -66,6 +66,106 @@ remove_min  O(n)            O(1)
 
  HEAPS 
 
+When using an unsorted list to store entries, we can perform insertions in O(1) time, but finding or removing an element with
+minimum key requires an O(n)-time loop through the entire collection. In contrast, if using a sorted list, we can trivially find or 
+remove the minimum element in O(1) time, but adding a new element to the queue may require O(n) time to restore the
+sorted order.
+In this section, we provide a more efficient realization of a priority queue using a data structure called a binary heap. 
+This data structure allows us to perform both insertions and removals in logarithmic time, which is a significant improvement
+over the list-based implementations.
+
+The Heap Data Structure:
+
+A heap is a Binary tree T which satisfy two additional properties:
+
+1. Heap-Order Property: In a heap T, for every position p other than the root,the key stored at p is greater than or equal to the key 
+stored at p’s parent.
+
+As a consequence of the heap-order property, the keys encountered on a path from the root to a leaf of T are in nondecreasing order. 
+Also, a minimum key is always stored at the root of T. This makes it easy to locate such an item when min or remove_min is called.
+
+2. Complete Binary Tree Property: A heap T with height h is a complete binary tree if levels 0,1,2, . . . ,h−1 of T have the maximum 
+number of nodes possible (namely, level i has 2i nodes, for 0 ≤ i ≤ h−1) and the remaining nodes at level h reside in the leftmost 
+possible positions at that level.
+
+A heap T storing n entries has height h = floor(log n)
+
+Justification: From the fact that T is complete, we know that the number of nodes in levels 0 through h−1 of T is precisely 
+ 1+2+4+· · ·+2h−1 = 2**h−1
+and that the number of nodes in level h is at least 1 and at most 2h. Therefore
+n ≥ 2**h−1+1 = 2**h and n ≤ 2**h−1+2**h = 2**(h+1)−1.
+
+By taking the logarithm of both sides of inequality:
+h≤log n and log(n+1)−1 ≤ h.
+
+Since h is an integer, these two inequalities imply that h = floor(log n)
+
+Implementing a Priority Queue with a Heap:
+
+Adding an Item to the Heap:
+
+We store the pair (k,v) as an item at a new node of the tree. To maintain the complete binary tree property, that new node should be 
+placed at a position p just beyond the rightmost node at the bottom level of the tree, or as the leftmost position of a new level, 
+if the bottom level is already full (or if the heap is empty).
+
+Up-Heap Bubbling After an Insertion:
+
+After this action, the tree T is complete, but it may violate the heap-order property. Hence, unless position p is the root of T 
+(that is, the priority queue was empty before the insertion), we compare the key at position p to that of p’s parent, which
+we denote as q. If key kp ≥kq, the heap-order property is satisfied and the algorithm terminates. If instead kp < kq, then we need to 
+restore the heap-order property, which can be locally achieved by swapping the entries stored at positions p and q.
+ This swap causes the new item to move up one level. Again, the heap-order property may be violated, so we repeat the process, going up
+in T until no violation of the heap-order property occurs.
+
+The upward movement of the newly inserted entry by means of swaps is conventionally called up-heap bubbling. 
+A swap either resolves the violation of the heap-order property or propagates it one level up in the heap. In the worst case, upheap
+bubbling causes the new entry to move all the way up to the root of heap T.
+Thus, in the worst case, the number of swaps performed in the execution of method add is equal to the height of T i.e. floor(long n).
+
+Removing the Item with Minimum Key:
+
+We know that the smallest key is stored at the root but we can not simply delete the node because this would leave two disconnected 
+subtrees.
+Instead, we ensure that the shape of the heap respects the complete binary tree property by deleting the leaf at the last position p 
+of T, defined as the rightmost position at the bottommost level of the tree and swap the item of that node with the root node.
+
+Down-Heap Bubbling After a Removal:
+
+However, for even though T is now complete, it likely violates the heap-order property.
+f T has only one node (the root), then the heap-order property is trivially satisfied and the algorithm terminates. 
+Otherwise, we distinguish two cases, where p initially denotes the root of T:
+
+• If p has no right child, let c be the left child of p.
+• Otherwise (p has both children), let c be a child of p with minimal key.
+
+If key kp ≤ kc, the heap-order property is satisfied and the algorithm terminates. If instead kp >kc, then we need to restore the
+heap-order property. This can be locally achieved by swapping the entries stored at p and c.
+
+It is worth noting that when p has two children, we intentionally consider the smaller key of the two children. Not only is the 
+key of c smaller than that of p, it is at least as small as the key at c’s sibling. This ensures that the heap-order property is
+locally restored when that smaller key is promoted above the key that had been at p and that at c’s sibling.
+
+this sorting also can go upto height of the tree, Thus, the number of swaps performed in the execution of method
+remove min is, in the worst case, equal to the height of heap T, that is, it is floor(log n)
 
 
+Array-Based Representation of a Complete Binary Tree:
 
+The array-based representation of a binary tree (Section 8.3.2) is especially suitable for a complete binary tree T.
+We recall that in this implementation, the elements of T are stored in an array-based list A such that the element at position p in T 
+is stored in A with index equal to the level number f (p) of p, defined as follows:
+• If p is the root of T, then f (p) = 0.
+• If p is the left child of position q, then f (p) = 2 f (q)+1.
+• If p is the right child of position q, then f (p) = 2 f (q)+2.
+
+Implementing a priority queue using an array-based heap representation allows us to avoid some complexities of a node-based tree
+structure. In particular, the add and remove min operations of a priority queue both depend on locating the last 
+index of a heap of size n. With the array-based representation, the last position is at index n−1 of the array. 
+Locating the last position of a complete binary tree implemented with a linked structure requires more effort.
+
+if size of the tree is not know in the advance array will be dynamiclly resized.
+
+The space usage of such an array-based representation of a complete binary tree with n nodes is O(n), and the time bounds of methods 
+for adding or removing elements become amortized.
+
+Python Heap Implementation : #see the code
