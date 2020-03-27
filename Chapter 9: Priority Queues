@@ -157,6 +157,7 @@ is stored in A with index equal to the level number f (p) of p, defined as follo
 • If p is the root of T, then f (p) = 0.
 • If p is the left child of position q, then f (p) = 2 f (q)+1.
 • If p is the right child of position q, then f (p) = 2 f (q)+2.
+• If p is the parent of q, then f(p) = f(q)//2
 
 Implementing a priority queue using an array-based heap representation allows us to avoid some complexities of a node-based tree
 structure. In particular, the add and remove min operations of a priority queue both depend on locating the last 
@@ -169,3 +170,23 @@ The space usage of such an array-based representation of a complete binary tree 
 for adding or removing elements become amortized.
 
 Python Heap Implementation : #see the code
+
+Operation            Running Time
+len(P), P.is_empty() O(1)
+P.min()              O(1)
+P.add()              O(log n)∗
+P.remove_min()       O(log n)∗
+The space requirement is O(n)
+
+∗amortized, if array-based
+
+
+
+heap data structure is a very efficient realization of the priority queue ADT, independent of whether the heap is implemented with a 
+linked structure or an array. The heap-based implementation achieves fast running times for both insertion and removal, unlike the 
+implementations that were based on using an unsorted or sorted list.
+
+ Bottom-Up Heap Construction 
+
+
+
