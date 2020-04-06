@@ -281,4 +281,20 @@ The methods of the priority queue ADT are sufficient for most basic applications
 Howevere there are situations in which additional methods would be useful, as shown by the scenarios:
   -new operation, remove, that removes an arbitrary entry.(someone become tired of waiting and decide to leave ahead of the their turn)
   -replace the key of an existing entry with a new key (Another standby passenger finds her gold frequent-flyer card)
-  --
+
+Locators:
+In order to implement methods update and remove efficiently, we need a mechanism for finding a user’s element within a priority queue 
+that avoids performing a linear search through the entire collection.
+To support our goal, when a new element is added to the priority queue, we return a special object known as a locator to the caller. 
+We then require the user to provide an appropriate locator as a parameter when invoking the update or remove method, as follows, 
+for a priority queue P:
+
+P.update(loc, k, v) : Replace key and value for the item identified by locator loc.
+P.remove(loc)       : Remove the item identified by locator loc from the priority queue and return its (key,value) pair.
+
+To implement a Locator class, we will extend the existing Item composite to add an additional field designating the current index of 
+the element within the array-based representation of our heap,
+
+
+
+
