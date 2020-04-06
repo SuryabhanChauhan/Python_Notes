@@ -188,5 +188,97 @@ implementations that were based on using an unsorted or sorted list.
 
  Bottom-Up Heap Construction 
 
+If we start with an initially empty heap, n successive calls to the add operation will
+run in O(nlogn) time in the worst case. However, if all n key-value pairs to be
+stored in the heap are given in advance, such as during the first phase of the heapsort
+algorithm, there is an alternative bottom-up construction method that runs in
+O(n) time.
+
+#see the code
+
+Proposition 9.3: Bottom-up construction of a heap with n entries takes O(n) time, assuming two keys can be compared in O(1) time.
+
+ Python’s heapq Module 
+Python’s standard distribution includes a heapq module that provides support for heap-based priority queues. 
+That module does not provide any priority queue class; instead it provides functions that allow a standard Python list to be managed as 
+a heap. 
+Its model is essentially the same as our own, with n elements stored in list cells L[0] through L[n−1], based on the level-numbering 
+indices with the smallest element at the root in L[0].
+
+We note that heapq does not separately manage associated values; elements serve as their own key.
+
+The heapq module supports the following functions, all of which presume that existing list L satisfies the heap-order property 
+prior to the call:
+heappush(L, e)   : Push element e onto list L and restore the heap-order property: O(logn) time.
+heappop(L)       : Pop and return the element with smallest value from list L, and reestablish the heap-order property: O(logn) time.
+heappushpop(L, e): Push element e on list L and then pop and return the smallest item: The time is O(logn), but it is slightly more
+                   efficient than separate calls to push and pop because the size of the list never changes. If the newly pushed element
+                   becomes the smallest, it is immediately returned. Otherwise, the new element takes the place of the popped
+                   element at the root and a down-heap is performed.
+heapreplace(L, e): Similar to heappushpop, but equivalent to the pop being performed before the push (in other words, the new element 
+                   cannot be returned as the smallest). Again, the time is O(logn), but it is more efficient that two separate operations.
+
+The module supports additional functions that operate on sequences that do not previously satisfy the heap-order property.
+
+heapify(L)            : Transform unordered list to satisfy the heap-order property. This executes in O(n) time by using the bottom-up
+                        construction algorithm.
+nlargest(k, iterable) : Produce a list of the k largest values from a given iterable. This can be implemented to run in O(n+k logn) time,
+                        where we use n to denote the length of the iterable.
+nsmallest(k, iterable): Produce a list of the k smallest values from a given iterable. This can be implemented to run in O(n+k log n)
+                        time, using similar technique as with nlargest.
+
+ Sorting with a Priority Queue 
+insertion sort and  selection sort below are implemented with the normal priority Quue not with the Heap priority Queue
+
+def pq_sort(C):
+    """Sort a collection of elements stored in a positional list."""
+    n = len(C)
+    P = PriorityQueue()
+    for j in range(n):
+        element = C.delete(C.first())
+        P.add(element, element)  # use element as key and value
+    for j in range(n):
+        (k, v) = P.remove_min()
+        C.add_last(v)  # store smallest remaining element in C
+
+Selection-Sort: The above code
+If we implement P with an unsorted list, then Phase 1 of pq sort takes O(n) time.
+In Phase 2, the running time of each remove min operation is proportional to the size of P. Thus, the bottleneck computation
+is the repeated “selection” of the minimum element in Phase 2. For this reason, this algorithm is better known as selection-sort.
+Thus, the first operation takes time O(n), the second one takes time O(n−1), and so on.
+
+complexity of the program will be O(n**2)
+
+Insertion-Sort: 
+If we implement the priority queue P using a sorted list, then we improve the running time of Phase 2 to O(n),
+but Phase 1 becomes the bottleneck for the running time, since, in the worst case, each add operation takes time proportional to the 
+current size of P.
+
+worst-case O(n2)
+best-case running time of O(n)
 
 
+Heap Sort:
+
+During Phase 1, the ith add operation takes O(log i) time, since the heap has i entries after the operation is performed. 
+Therefore this phase takes O(nlogn) time. (It could be improved to O(n) with the bottom-up heap construction.)
+
+Second phase also runs in O(nlogn) 
+
+so the entire priority-queue sorting algorithm runs in O(nlog n) time when we use a heap to implement the priority queue. 
+This sorting algorithm is better known as heap-sort
+
+
+Implementing Heap-Sort In-Place:
+
+If the collection C to be sorted is implemented by means of an array-based sequence, most notably as a Python list, we can speed up
+heap-sort and reduce its space requirement by a constant factor using a portion of the list itself to store the heap, 
+thus avoiding the use of an auxiliary heap data structure.
+
+ Adaptable Priority Queues 
+
+The methods of the priority queue ADT are sufficient for most basic applications of priority queues, such as sorting
+Howevere there are situations in which additional methods would be useful, as shown by the scenarios:
+  -new operation, remove, that removes an arbitrary entry.(someone become tired of waiting and decide to leave ahead of the their turn)
+  -replace the key of an existing entry with a new key (Another standby passenger finds her gold frequent-flyer card)
+  --
