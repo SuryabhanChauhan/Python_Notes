@@ -269,7 +269,7 @@ so the entire priority-queue sorting algorithm runs in O(nlog n) time when we us
 This sorting algorithm is better known as heap-sort
 
 
-Implementing Heap-Sort In-Place:
+Implementing Heap-Sort In-Place:
 
 If the collection C to be sorted is implemented by means of an array-based sequence, most notably as a Python list, we can speed up
 heap-sort and reduce its space requirement by a constant factor using a portion of the list itself to store the heap, 
@@ -289,11 +289,22 @@ To support our goal, when a new element is added to the priority queue, we retur
 We then require the user to provide an appropriate locator as a parameter when invoking the update or remove method, as follows, 
 for a priority queue P:
 
-P.update(loc, k, v) : Replace key and value for the item identified by locator loc.
+p.update(loc, k, v) : Replace key and value for the item identified by locator loc.
 P.remove(loc)       : Remove the item identified by locator loc from the priority queue and return its (key,value) pair.
 
 To implement a Locator class, we will extend the existing Item composite to add an additional field designating the current index of 
 the element within the array-based representation of our heap,
+
+Implementing an Adaptable Priority Queue:
+
+
+Operation Running Time
+
+len(P), P.is_empty( ), P.min() :  O(1)
+P.add(k,v)                     :  O(logn)∗
+P.update(loc, k, v)            :  O(logn)
+P.remove(loc)                  :  O(logn)∗
+P.remove_min()                 :  O(logn)∗
 
 
 
