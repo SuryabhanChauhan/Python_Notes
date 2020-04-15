@@ -39,3 +39,43 @@ def setdefault(self, k, d):
   except KeyError: # otherwise:
     self[k] = d # set default value with setitem
     return d # and return that newly assigned value
+
+
+---------------------- 10.1.4 Our MapBase Class ------------------------------
+
+The MutableMapping abstract base class, from Python’s collections module
+and discussed in the preceding pages, is a valuable tool when implementing a map.
+However, in the interest of greater code reuse, we define our own MapBase class,
+which is itself a subclass of the MutableMapping class.
+
+                                      MutableMapping ( Collections Module)
+                                            !
+             _____________________________MapBase________________________________
+             !                  !                        !                      !
+        UnsortedTableMap    HashMapBase              SortedTableMap          TreeMap
+                          ______!_______
+                         !              !
+                   ChainHashMap    ProbeHashMap
+                   
+#see the code of MapBase
+
+-------------------------------------- 10.1.5 Simple Unsorted Map Implementation -----------------------------------------
+
+We demonstrate the use of the MapBase class with a very simple concrete implementation of the map ADT.
+An implementation of a map using a Python list as an unsorted table.
+
+#see the code
+
+
+
+---------------------------------------- 10.2 Hash Tables ------------------------------------------------------------
+                   
+we introduce one of the most practical data structures for implementing a map, and the one that is used by Python’s own implementation 
+of the dict class. This structure is known as a hash table.
+
+in hash tables we store the value associated with key k at index k of the table (presuming that we have a distinct way to represent an 
+empty slot). Basic map operations of getitem , setitem , and delitem can be implemented in O(1) worst-case time.
+
+
+
+
