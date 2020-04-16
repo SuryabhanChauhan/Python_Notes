@@ -68,7 +68,7 @@ An implementation of a map using a Python list as an unsorted table.
 
 
 
----------------------------------------- 10.2 Hash Tables ------------------------------------------------------------
+ 10.2 Hash Tables 
                    
 we introduce one of the most practical data structures for implementing a map, and the one that is used by Python’s own implementation 
 of the dict class. This structure is known as a hash table.
@@ -77,5 +77,52 @@ in hash tables we store the value associated with key k at index k of the table 
 empty slot). Basic map operations of getitem , setitem , and delitem can be implemented in O(1) worst-case time.
 
 
+There are two challenges in extending this framework to the more general setting of a map:
+  1.we may not wish to devote an array of length N if it is the case that N >> n. 
+  2.we do not in general require that a map’s keys be integers.
+
+The novel concept for a hash table is the use of a hash function to map general keys to corresponding indices in a table. 
+Ideally, keys will be well distributed in the range from 0 to N −1 by a hash function, but in practice there may be two or more
+distinct keys that get mapped to the same index. As a result, we will conceptualize our table as a bucket array(at one index one or
+more key value pair are getting stored).
+
+
+----------------------------------------------- 10.2.1 Hash Functions ----------------------------------------------------------
+
+The goal of a hash function, h, is to map each key k to an integer in the range
+[0,N −1], where N is the capacity of the bucket array for a hash table. Equipped
+with such a hash function, h, the main idea of this approach is to use the hash
+function value, h(k), as an index into our bucket array, A, instead of the key k
+(which may not be appropriate for direct use as an index). That is, we store the
+item (k,v) in the bucket A[h(k)].
+
+If there are two or more keys with the same hash value, then two different items
+will be mapped to the same bucket in A. In this case, we say that a collision has
+occurred.
+
+there are ways to deal with the collisions but best strategy is to avoid them.
+
+It is common to view the evaluation of a hash function, h(k), as consisting of two portions—a hash code that maps a key k to an integer,
+and a compression function that maps the hash code to an integer within a range of indices, [0,N −1].
+                                     
+                                     Arbitrary Objects
+                                            ||
+                                        hash Code
+                                            ||
+                              ..........-2,-1,0,1,2........
+                                            ||
+                                       Compression Function
+                                            ||
+                                    0, 1...................N-1
+
+
+by breaking hash function into two part, now we can use the hash code for any size of hash table, and only compression function have to
+deal with the size not the hash code
+
+-------------------------------------------Hash Codes------------------------------------------------
+
+Treating the Bit Representation as an Integer:
+
+                                    
 
 
