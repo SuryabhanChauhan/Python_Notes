@@ -121,7 +121,7 @@ deal with the size not the hash code
 
 -------------------------------------------Hash Codes------------------------------------------------
 
-Treating the Bit Representation as an Integer:
+-------------------Treating the Bit Representation as an Integer:
 
 For any data type X that is represented using at most as many
 bits as our integer hash codes, we can simply take as a hash code for X an integer interpretation of its bits. 
@@ -140,7 +140,7 @@ any object x whose binary representation can be viewed as an n-tuple (x0,x1, . .
 for example, by forming a hash code for x as Σn−1 i=0 xi, or as x0⊕x1 ⊕···⊕xn−1,
 where the ⊕ symbol represents the bitwise exclusive-or operation (which is ˆ in Python).
 
-Polynomial Hash Codes: 
+-------------------------------Polynomial Hash Codes: 
 
 just adding the unicode value of the character of the string will producce lot of coliision(above approch). like "temp01" and
 "temp10" collide using this function, as do "stop", "tops", "pots", and "spot". 
@@ -150,7 +150,7 @@ x0an−1 +x1an−2+· · ·+xn−2a+xn−1.
 
 #see the code
 
-Cyclic-Shift Hash Codes: 
+--------------------------------Cyclic-Shift Hash Codes: 
 A variant of the polynomial hash code replaces multiplication by a with a cyclic shift of a partial sum by a 
 certain number of bits. For example, a 5-bit cyclic shift of the 32-bit value 00111101100101101010100010101000 is achieved by taking
 the leftmost five bits and placing those on the rightmost side of the representation, resulting in 10110010110101010001010100000111.
@@ -160,7 +160,7 @@ the leftmost five bits and placing those on the rightmost side of the representa
 the shift amount should be taken appropriatly to reduce the collision
 
 
-----------------------------Hash Codes in Python: ---------------------------------
+---------------------------------------------- Hash Codes in Python: -------------------------------------------
 
 The standard mechanism for computing hash codes in Python is a built-in function with signature hash(x) that returns an integer value 
 that serves as the hash code for object x. 
@@ -225,8 +225,8 @@ This compression function is chosen in order to eliminate repeated patterns in t
 “good” hash function, that is, one such that the probability any two different keys collide is 1/N. This good behavior would be
 the same as we would have if these keys were “thrown” into A uniformly at random.
 
------------------------------------------------- 10.2.2 Collision-Handling Schemes ------------------------------------------------
 
+------------------------------------------------ 10.2.2 Collision-Handling Schemes ------------------------------------------------
 
 ------------Sperate Chaining:
 
@@ -242,6 +242,7 @@ worst case O(n), whene hash function generate same hash value for all the n keys
 
 
 ---------------Open Addressing:
+
 The separate chaining rule has many nice properties, such as affording simple implementations of map operations, but it nevertheless has
 one slight disadvantage:
 It requires the use of an auxiliary data structure—a list—to hold items with colliding keys. If space is at a premium (for example, 
@@ -257,20 +258,104 @@ Below are some methods which are used to avoid collision in open addressing:
 
 1. Linear Probing: In this if for some key collision occure we check the next position until we find empty spot. in case of removing
                    we can't simply remove we need to set a flag after removing the key.
+
+With this approach, if we try to insert an item (k,v) into a bucket A[ j] that is already occupied, where j = h(k), then we next try 
+A[( j+1) mod N]. If A[( j+1) mod N] is also occupied, then we try A[( j+2) mod N], and so on, until we find an empty
+bucket that can accept the new item.
+while with this approach, to attempt to locate an item with key equal to k, we must examine consecutive slots, starting from A[h(k)], 
+until we either find an item with that key or we find an empty bucket.
+
+To implement a deletion, we cannot simply remove a found item from its slot in the array. typical way to get around this difficulty
+is to replace a deleted item with a special “available” marker object. With this special marker possibly occupying spaces in our hash 
+table, we modify our search algorithm so that the search for a key k will skip over cells containing the available marker and continue 
+probing until reaching the desired item or an empty bucket.
+
+Additionally, our algorithm for setitem should remember an available cell encountered during the search for k, 
+since this is a valid place to put a new item (k,v), if no existing item is found.
+
+disadvantage of linear probing is that, It tends to cluster the items of a map into contiguous runs, which may even overlap(particularly
+if more than half of the cells in the hash table are occupied). Such contiguous runs of occupied hash cells cause searches to slow down 
+considerably.
                    
 2. Quadratic Probing: In this we do not move to next position rather we move to the quadratic positions like hash_value + 1**2 then
                       hash_value + 2**2 and so on.
+Another open addressing strategy, known as quadratic probing, iteratively tries the buckets A[(h(k)+ f (i)) mod N], for i =0,1,2, . . .,
+where f (i) =i**2, until finding an empty bucket.
+
+this approach complicates the removal operation, though this probing remove the linear probing clustring patern but it create it's own 
+clustering know as secondary clustering.
                      
 3. Double Hashing: In this we use 2 hash fucntions. when collision occurs we use the second hash function to generate the value and 
-                   then add up that value with the previous hash function's output and that's how we get our new address
+                   then add up that value with the previous hash function's output and that's how we get our new address.
                    
                    2nd hash function should always produce different output from the 1st one for same key
                    
                    2nd function should not producce 0 as we are adding up the two values
 
+An open addressing strategy that does not cause clustering of the kind produced by linear probing or the kind produced by quadratic 
+probing is the double hashing strategy. In this approach, we choose a secondary hash function, h', and if h maps
+some key k to a bucket A[h(k)] that is already occupied, then we iteratively try the buckets A[(h(k)+ f (i)) mod N] next, 
+for i = 1,2,3, . . ., where f (i) = i · h'(k).
+In this scheme, the secondary hash function is not allowed to evaluate to zero; a common choice is h'(k) = q−(k mod q), for some prime 
+number q < N. Also, N should be a prime.
+
+4. Another approach to avoid clustering with open addressing is to iteratively try buckets A[(h(k)+ f (i)) mod N] where f (i) is based 
+on a pseudo-random number generator, providing a repeatable, but somewhat arbitrary, sequence of subsequent probes that depends upon
+bits of the original hash code. This is the approach currently used by Python’s dictionary class.
 
 
+--------------------------------------------- 10.2.3 Load Factors, Rehashing, and Efficiency -------------------------------------
 
+--------- Load Factor:
+
+In the hash table schemes described thus far, it is important that the load factor, λ = n/N, be kept below 1.
+
+Separate chaining: as λ gets very close to 1, the probability of a collision greatly increases, which adds overhead to our operations,
+                   since we must revert to linear-time list-based methods in buckets that have collisions. 
+                   experiments suggest to have λ < 0.9 for hash tables with separate chaining.
+
+Open addressing: as the load factor λ grows beyond 0.5 and starts approaching 1, clusters of entries in the bucket array start to grow 
+                 as well. These clusters cause the probing strategies to “bounce around” the bucket array for a considerable amount of 
+                 time before they find an empty slot.
+                 Experiments suggest that we should maintain λ < 0.5 for an open addressing scheme with linear probing, and perhaps only
+                 a bit higher for other open addressing schemes.
+                 for example, Python’s implementation of open addressing enforces that λ < 2/3
+
+------------------Rehashing:
+            If an insertion causes the load factor of a hash table to go above the specified threshold, then it is common to resize the 
+           table (to regain the specified load factor) and to reinsert all objects into this new table. Although we need not define a
+           new hash code for each object, we do need to reapply a new compression function that takes into consideration the size of the
+           new table.
+           When rehashing to a new table, it is a good requirement for the new array’s size to be at least double the previous size.
+           (amortize the cost of rehashing)
+
+--------------Efficiency of Hash Tables: 
+
+If our hash function is good, then we expect the entries to be uniformly distributed in the N cells of the bucket
+array. Thus, to store n entries, the expected number of keys in a bucket would
+be [n/N], which is O(1) if n is O(N).
+
+In the worst case, a poor hash function could map every item to the same bucket. This would result in linear-time performance for the 
+core map operations
+
+
+Operation   List      Hash Table
+                  expected worst case
+getitem     O(n)   O(1)     O(n)
+setitem     O(n)   O(1)     O(n)
+delitem     O(n)   O(1)     O(n)
+len         O(1)   O(1)     O(1)
+iter        O(n)   O(n)     O(n)
+
+In practice, hash tables are among the most efficient means for implementing a map, and it is essentially taken for granted by 
+programmers that their core operations run in constant time.
+
+pyhton dict class is implemented withh the hashing.
+
+Python interpreter relies on dictionaries to retrieve an object that is referenced by an identifier in a given namespace.
+
+The basic command c = a + b involves two calls to __getitem__ in the dictionary for the local namespace to retrieve the values 
+identified as a and b, and a call to __setitem__ to store the result associated with name c in that namespace.
 
 
 
