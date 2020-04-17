@@ -339,13 +339,13 @@ In the worst case, a poor hash function could map every item to the same bucket.
 core map operations
 
 
-Operation   List      Hash Table
-                  expected worst case
-getitem     O(n)   O(1)     O(n)
-setitem     O(n)   O(1)     O(n)
-delitem     O(n)   O(1)     O(n)
-len         O(1)   O(1)     O(1)
-iter        O(n)   O(n)     O(n)
+Operation       List      Hash Table
+                      expected worst case
+__getitem__     O(n)   O(1)     O(n)
+__setitem__     O(n)   O(1)     O(n)
+__delitem__     O(n)   O(1)     O(n)
+__len__         O(1)   O(1)     O(1)
+__iter__        O(n)   O(n)     O(n)
 
 In practice, hash tables are among the most efficient means for implementing a map, and it is essentially taken for granted by 
 programmers that their core operations run in constant time.
@@ -356,6 +356,9 @@ Python interpreter relies on dictionaries to retrieve an object that is referenc
 
 The basic command c = a + b involves two calls to __getitem__ in the dictionary for the local namespace to retrieve the values 
 identified as a and b, and a call to __setitem__ to store the result associated with name c in that namespace.
+
+
+-------------------------------------------------10.2.4 Python Hash Table Implementation -------------------------------------
 
 
 
