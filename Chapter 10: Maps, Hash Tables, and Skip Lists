@@ -14,12 +14,10 @@ MutableMapping class extends that to include the mutating methods. What we
 define as the map ADT in Section 10.1.1 is akin to the MutableMapping abstract
 base class in Python’s collections module.
 
-In particular, the MutableMapping
-class provides concrete implementations for all behaviors other than the first five
-outlined in Section 10.1.1: __getitem__ , __setitem__ , __delitem__ , __len__ , and
-__iter__ . As we implement the map abstraction with various data structures, as
-long as we provide the five core behaviors, we can inherit all other derived behaviors
-by simply declaring MutableMapping as a parent class.
+In particular, the MutableMapping class provides concrete implementations for all behaviors other than the first five outlined in 
+Section 10.1.1: __getitem__ , __setitem__ , __delitem__ , __len__ , and __iter__ . As we implement the map abstraction with various data structures, as
+long as we provide the five core behaviors, we can inherit all other derived behaviors by simply declaring MutableMapping as a parent 
+class.
   
 To better understand the MutableMapping class, we provide a few examples of
 how concrete behaviors can be derived from the five core abstractions. For example,
@@ -238,7 +236,7 @@ n: total no of elements in our hash table
 N: size of the bucket array
 
 the best O(1) when our hash function distribute all the key equally
-worst case O(n), whene hash function generate same hash value for all the n keys
+worst case O(n), when hash function generate same hash value for all the n keys
 
 
 ---------------Open Addressing:
@@ -249,7 +247,7 @@ It requires the use of an auxiliary data structure—a list—to hold items with
 if we are writing a program for a small handheld device), then we can use the alternative approach of always storing
 each item directly in a table slot.
 
-This approach saves space because no auxiliary structures are employed, but it requires a bit more complexity to deal with collisions.
+Open addressing approach saves space because no auxiliary structures are employed, but it requires a bit more complexity to deal with collisions.
 
 Open addressing requires that the load factor is always at most 1 and that items are stored directly in the cells of the bucket
 array itself.
@@ -360,7 +358,16 @@ identified as a and b, and a call to __setitem__ to store the result associated 
 
 -------------------------------------------------10.2.4 Python Hash Table Implementation -------------------------------------
 
+The main design elements of the HashMapBase class are:
+  • The bucket array is represented as a Python list, named self. table, with all entries initialized to None.
+  • We maintain an instance variable self. n that represents the number of distinct items that are currently stored in the hash table.
+  • If the load factor of the table increases beyond 0.5, we double the size of the table and rehash all items into the new table.
+  • We define a hash function utility method that relies on Python’s built-in hash function to produce hash codes for keys, and a     
+ randomized Multiply-Add-and-Divide (MAD) formula for the compression function
 
+# See the code HashMapBase.py
+
+------------------------------------------------ 10.3 Sorted Maps --------------------------------------------------------------
 
 
 
