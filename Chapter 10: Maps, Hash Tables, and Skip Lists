@@ -369,7 +369,21 @@ The main design elements of the HashMapBase class are:
 
 ------------------------------------------------ 10.3 Sorted Maps --------------------------------------------------------------
 
+sorted map ADT that includes all behaviors of the standard map, plus the following:
 
+M.find_min()             : Return the (key,value) pair with minimum key (or None, if map is empty).
+M.find_max()             : Return the (key,value) pair with maximum keyv(or None, if map is empty).
+M.find_lt(k)             : Return the (key,value) pair with the greatest key thatvis strictly less than k (or None, if no such item 
+                           exists).
+M.find_le(k)             : Return the (key,value) pair with the greatest key that is less than or equal to k (or None, if no such item
+                           exists).
+M.find_gt(k)             : Return the (key,value) pair with the least key that is strictly greater than k (or None, if no such item
+                           exists).
+M.find_ge(k)             : Return the (key,value) pair with the least key that is greater than or equal to k (or None, if no such item).
+M.find_range(start, stop): Iterate all (key,value) pairs with start <= key < stop. If start is None, iteration begins with minimum key; 
+                           if stop is None, iteration concludes with maximum key.
+iter(M)                  : Iterate all keys of the map according to their natural order, from smallest to largest.
+reversed(M)              : Iterate all keys of the map in reverse order; in Python, this is implemented with the __reversed__ method.
 
 
 
