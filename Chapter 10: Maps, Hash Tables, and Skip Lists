@@ -386,4 +386,45 @@ iter(M)                  : Iterate all keys of the map according to their natura
 reversed(M)              : Iterate all keys of the map in reverse order; in Python, this is implemented with the __reversed__ method.
 
 
+Time Analysis
+
+Operation 					         Running Time
+len(M)					           : O(1)
+k in M 					           : O(logn)
+M[k] = v 				           : O(n) worst case; O(logn) if existing k  # O(n) in the case when key dosen't exist and it needs to be
+                                                                  # inserted at the first index in that case all the other
+                                                                  # items needs to be shifted to next positions and hence needs n moves
+del M[k] 				           : O(n) worst case                      # same as insertion if deletion take place at fisrt index
+M.find_min(), M.find_max() : O(1)
+M.find_lt(k), M.find_gt(k) : O(logn)
+M.find_le(k), M.find_ge(k) : O(logn)
+M.find_range(start, stop)  : O(s+logn) where s items are reported   # log(n) time to locate the first element of range
+                                                                    # and then s time to traverse the s items
+iter(M), reversed(M) 	     : O(n)
+
+
+-----------------------------------------10.3.2 Two Applications of Sorted Maps ---------------------------------------------------
+
+
+--------------------1 Flight Databases:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
