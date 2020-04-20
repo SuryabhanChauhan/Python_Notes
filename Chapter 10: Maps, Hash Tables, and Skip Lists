@@ -407,6 +407,104 @@ iter(M), reversed(M) 	     : O(n)
 
 
 --------------------1 Flight Databases:
+Internet that allow users to perform queries on flight databases to find flights between various cities, typically with the intent to
+buy a ticket. To make a query, a user specifies origin and destination cities, a departure date, and a departure time. To support such
+queries, we can model the flight database as a map, where keys are Flight objects that contain fields corresponding
+to these four parameters. That is, a key is a tuple
+
+k = (origin,destination,date,time)
+
+--------------------2 Maxima Sets:
+
+
+
+------------------------------------------------- 10.4 Skip Lists --------------------------------------------------------------
+
+An interesting data structure for realizing the sorted map ADT is the skip list.
+
+A skip list S for a map M consists of a series of lists {S0,S1, . . . ,Sh}. Each list Si stores a subset of the items of M sorted by 
+increasing keys, plus items with two sentinel keys denoted −∞ and +∞,
+
+in general, Si to have about n/2**i items, but it's not mandatory.
+The halving of the number of items from one list to the next is not enforced as an explicit property of skip lists, however. 
+Instead, randomization is used.
+
+The main advantage of using randomization in data structure and algorithm design is that the structures and functions that result are
+usually simple and efficient.
+
+Functions that generate numbers that can be viewed as random numbers are built into most modern computers, because they are used 
+extensively in computer games, cryptography, and computer simulations.
+Some functions, called pseudorandom number generators, generate random-like numbers, starting with an initial seed. 
+Other methods use hardware devices to extract “true” random numbers from nature.
+
+
+The skip list has the same logarithmic time bounds for searching as is achieved by the binary search algorithm, but skip list have the
+same bound for update methods when inserting or deleting items. 
+Nevertheless, the bounds are expected for the skip list i.e. it is not exactly log(n) but maybe nearby, while binary search has a 
+worst-case bound with a sorted table.
+
+A skip list makes random choices in arranging its structure in such a way that search and update times are O(logn) on average, where n 
+is the number of items in the map.
+
+Using the position abstraction used for lists and trees, we view a skip list as a two-dimensional collection of positions arranged 
+horizontally into levels and vertically into towers.
+
+The positions in a skip list can be traversed using the following operations:
+
+next(p): Return the position following p on the same level.
+prev(p): Return the position preceding p on the same level.
+below(p): Return the position below p in the same tower.
+above(p): Return the position above p in the same tower.
+
+
+maximum level = log(n) +1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
