@@ -577,63 +577,249 @@ Either choice will still result in the expected O(logn) time to perform search, 
 
 
 
+In terms of worst-case performance, however, skip lists are not a superior data
+structure. In fact, if we do not officially prevent an insertion from continuing significantly
+past the current highest level, then the insertion algorithm can go into what
+is almost an infinite loop (it is not actually an infinite loop, however, since the probability
+of having a fair coin repeatedly come up heads forever is 0). Moreover, we
+cannot infinitely add positions to a list without eventually running out of memory.
+In any case, if we terminate position insertion at the highest level h, then the worstcase
+running time for performing the getitem , setitem , and delitem
+map operations in a skip list S with n entries and height h is O(n+h). This worstcase
+performance occurs when the tower of every entry reaches level h−1, where
+h is the height of S. However, this event has very low probability
+
+------------------ Bounding the Height of a Skip List:
+
+Because the insertion step involves randomization, a more accurate analysis of skip
+lists involves a bit of probability.
+
+Let us begin by determining the expected value of the height h of a skip list S
+with n entries
+
+The probability that a given entry has a tower of height i ≥ 1 is equal to the probability of getting i
+consecutive heads when flipping a coin, that is, this probability is 1/2**i. Hence, the
+probability Pi that level i has at least one position is at most
+Pi ≤ n/2**i : for the probability that any one of n different events occurs is at most the sum of the probabilities that each occurs.
+
+The probability that the height h of S is larger than i is equal to the probability
+that level i has at least one position, that is, it is no more than Pi. This means that h
+is larger than, say, the ith poition is 3logn, so the probability that atleast one entry will reach that level is:
+P3logn ≤ n/2**3logn
+        =n/n3 
+        =1/n2
+For example, if n = 1000, this probability is a one-in-a-million long shot.
+More generally, given a constant c > 1, h is larger than clogn with probability at most
+1/n**c−1. That is, the probability that h is smaller than clog n is at least 1−1/n**c−1.
+
+this means that probability of having height nlog n is very less.
+Thus, with high probability, the height h of S is O(logn).
+
+---------------------- Analyzing Search Time in a Skip List:
+
+Next, consider the running time of a search in skip list S, and recall that such a
+search involves two nested while loops. The inner loop performs a scan forward on
+a level of S as long as the next key is no greater than the search key k, and the outer
+loop drops down to the next level and repeats the scan forward iteration.
+
+Since the height h of S is O(logn) with high probability, the number of drop-down steps is
+O(logn) with high probability.
+
+Let ni be the number of keys examined while scanning forward at level i.
+
+Observe that, after the key at the starting position, each additional key examined in a scan-forward at
+level i cannot also belong to level i+1. If any of these keys were on the previous
+level, we would have encountered them in the previous scan-forward step. Thus,
+the probability that any key is counted in ni is 1/2. Therefore, the expected value of
+ni is exactly equal to the expected number of times we must flip a fair coin before
+it comes up heads. This expected value is 2. Hence, the expected amount of time
+spent scanning forward at any level i is O(1). 
+
+Since S has O(logn) levels with high probability, a search in S takes expected time O(log n).
+
+
+By a similar analysis, we can show that the expected running time of an insertion or a removal is O(log n).
+
+------------------------------ Space Usage in a Skip List:
+
+As we observed above, the expected number of positions at level i is n/2**i.
+So the expected total number of positions in S is:
+
+h            h
+Σ n/2**i = n Σ 1/2**i
+i=0          i=0
+n
+Using the Geometric Sum:
+
+= 2.(1 - 1/2**(h+1)) < 2 for all h>= 0
+
+Hence, the expected space requirement of S is O(n).
+
+
+Operation                     Running Time
+len(M)                      : O(1)
+k in M                      : O(logn) expected
+M[k] = v                    : O(logn) expected
+del M[k]                    : O(logn) expected
+M.find_min(), M.find_max()  : O(1)
+M.find_lt(k), M.find_gt(k)  : O(logn) expected
+M.find_le(k), M.find_ge(k)  : O(logn) expected
+M.find_range(start, stop)   : O(s+logn) expected, with s items reported
+iter(M), reversed(M)        : O(n)
+
+--------------------------------------------- 10.5 Sets, Multisets, and Multimaps -----------------------------
+
+
+• A set is an unordered collection of elements, without duplicates, that typically supports efficient membership tests. In essence, 
+elements of a set are like keys of a map, but without any auxiliary values.
+"python sets are mutable but it can only accomodate non mutable type."
+
+• A multiset (also known as a bag) is a set-like container that allows duplicates.
+
+• A multimap is similar to a traditional map, in that it associates values with keys; however, in a multimap the same key can be mapped 
+to multiple values.
+For example, the index of this book maps a given term to one or more locations at which the term occurs elsewhere in the book.
 
 
 
+------------------------ 10.5.1 The Set ADT -----------------------------
+
+Python provides support for representing the mathematical notion of a set through the built-in classes frozenset and set,
+with frozenset being an immutable form. Both of those classes are implemented using
+hash tables in Python.
+
+Python’s collections module defines abstract base classes that essentially mirror
+these built-in classes.
+
+The abstract base class collections.Set matches the concrete frozenset class,
+while the abstract base class collections.MutableSet is akin to the concrete set class.
+
+we equate the “set ADT” with the behavior of the builtin set class (and thus, the collections.MutableSet base class).
+five most fundamental behaviors for a set S:
+
+S.add(e)    : Add element e to the set. This has no effect if the set already contains e.
+S.discard(e): Remove element e from the set, if present. This has no effect if the set does not contain e.
+e in S      : Return True if the set contains element e. In Python, this is implemented with the special __contains__ method.
+len(S)      : Return the number of elements in set S. In Python, this is implemented with the special method __len__ .
+iter(S)     : Generate an iteration of all elements of the set. In Python, this is implemented with the special method __iter__ .
+
+additional operations for removing one or more elements from a set:
+S.remove(e) : Remove element e from the set. If the set does not contain e, raise a KeyError.
+S.pop()     : Remove and return an arbitrary element from the set. If the set is empty, raise a KeyError.
+S.clear()   : Remove all elements from the set.
+
+S and T are two sets, below are the boolean bw the two:
+
+S==T, S!=T : equal if contents are identical else not equal return tre and false
+S<=T       : Return True if set S is a subset of set T.
+S < T      : Return True if set S is a proper subset of set T.
+S >= T     : Return True if set S is a superset of set T.
+S > T      : Return True if set S is a proper superset of set T.
+S.isdisjoint(T): Return True if sets S and T have no common elements.
+
+S | T : Return a new set representing the union of sets S and T.
+S |= T: Update set S to be the union of S and set T.
+S & T : Return a new set representing the intersection of sets S and T.
+S &= T: Update set S to be the intersection of S and set T.
+S ˆ T : Return a new set representing the symmetric difference of sets S and T, that is, a set of elements that are in precisely one of
+        S or T.
+        exclude the common elements of both the sets
+S ˆ= T: Update set S to become the symmetric difference of itself and set T.
+S − T : Return a new set containing elements in S but not T.
+S −= T: Update set S to remove all common elements with set T.
+
+--------------------------- 10.5.2 Python’s MutableSet Abstract Base Class:
+
+Python’s collections module provides a MutableSet abstract base class.
+
+The MutableSet base class provides concrete implementations for all methods, except forfive core behaviors 
+(add, discard, contains , len , and iter ) that must be implemented by any concrete subclass.
+
+let's examine algorithms for implementing several of the derived methods of the MutableSet base 
+
+Example 1: To determine if one set is a proper subset of another, we must verify two conditions: 
+  1. a proper subset must have size strictly smaller than that of its superset
+  2. each element of a subset must be contained in the superset.
+An implementation of the corresponding __lt__ method based on this logic;
+
+lt (self, other): # supports syntax S < T
+  """Return true if this set is a proper subset of other"""
+  if len(self) >= len(other):
+    return False # proper subset must have strictly smaller size
+  for e in self:
+    if e not in other:
+      return False # not a subset since element missing from other
+  return True # success; all conditions are met
+
+A possible implementation of the MutableSet. __lt__ method, which tests if one set is a proper subset of another
+
+Example 2: Union of the two sets
+
+The syntax S | T should produce a new set that has contents equal to the union of existing sets S and T. 
+This operation is implemented through the special method __or__ in Python.
+
+def or (self, other): # supports syntax S | T
+  """Return a new set that is the union of two existing sets"""
+  result = type(self)( ) # create new instance of concrete class
+  for e in self:
+    result.add(e)
+  for e in other:
+    result.add(e)
+
+An implementation of the MutableSet.__or__ method, which computes the union of two existing sets.
+
+When computing the union of two such concrete instances, the result should presumably be an instance of the same class as the
+operands. The function type(self) returns a reference to the actual class of the instance identified as self, and the subsequent 
+parentheses in expression type(self)( ) call the default constructor for that class.
+
+efficiency:
+n = size of set S
+m = size of set T
+then If the concrete sets are implemented with hashing, the expected running time of the implementation in Code Fragment 10.15 is
+O(m+n), because it loops over both sets, performing constant-time operations in the form of a containment check and a possible insertion
+into the result.
 
 
+Another syntax, S |= T is used to update existing set S to become the union of itself and set T. Therefore, all elements of T that are 
+not already contained in S should be added to S.
+
+We note that this “in-place” operation may be implemented more efficiently than if we were to rely on the first form, using the syntax 
+S = S | T, in which identifier S is reassigned to a new set instance that represents the union.
+
+def __ior__(self, other):       # supports syntax S |= T
+  """Modify this set to be the union of itself an another set"""
+  for e in other:
+    self.add(e)
+  return self                   # technical requirement of in-place operator
 
 
+The __ior__ special method that supports syntax S |= T. Notice that in this case, we do not create a new set instance, instead we modify
+and return the existing set, after updating its contents to reflect the union operation. The in-place version of the union has expected 
+running time O(m) where m is the size of the second set, because we only have to loop through that second set.
 
+----------------------------------------------- 10.5.3 Implementing Sets, Multisets, and Multimaps ------------------------------------
 
+Sets:
+Although sets and maps have very different public interfaces, they are really quite similar. A set is simply a map in which keys do not 
+have associated values. Any data structure used to implement a map can be modified to implement the set ADT with similar performance 
+guarantees. We could trivially adapt any map class by storing set elements as keys, and using None as an irrelevant value, but such an 
+implementation is unnecessarily wasteful. An efficient set implementation should abandon the Item composite that we use in our MapBase
+class and instead store set elements directly in a data structure.
 
+Multisets:
+The same element may occur several times in a multiset. All of the data structures we have seen can be reimplemented to allow for
+duplicates to appear as separate elements. However, another way to implement a multiset is by using a map in which the map key is a 
+(distinct) element of the multiset, and the associated value is a count of the number of occurrences of that element within the multiset
 
+Python’s standard collections module includes a definition for a class named Counter that is in essence a multiset. Formally, the 
+Counter class is a subclass of dict, with the expectation that values are integers, and with additional functionality
 
+The standard iter reports each element only once (since those are formally the keys of the dictionary). There is another method named
+elements( ) that iterates through the multiset with each element being repeated according to its count.
 
+Multimaps:
 
+Although there is no multimap in Python’s standard libraries, a common implementation approach is to use a standard map in which the 
+value associated with a key is itself a container class storing any number of associated values.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#see the code in book for imlementation
