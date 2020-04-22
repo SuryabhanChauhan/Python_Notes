@@ -1,3 +1,64 @@
 
 ----------------------------------------- 11.1 Binary Search Trees --------------------------------
 
+binary search tree is a binary tree T with each position p storing a key-value pair (k,v) such that:
+• Keys stored in the left subtree of p are less than k.
+• Keys stored in the right subtree of p are greater than k.
+
+------------------- 11.1.1 Navigating a Binary Search Tree:
+
+An inorder traversal of a binary search tree visits positions in increasing order of their keys.
+
+BST will support the generic binary tree navigation like parent(p), left(p), and right(p).
+With a binary search tree, we can provide additional navigation based on the natural order of the keys stored in the tree:
+
+first( ) : Return the position containing the least key, or None if the tree is empty.
+last( )  : Return the position containing the greatest key, or None if empty tree.
+before(p): Return the position containing the greatest key that is less than that of position p (i.e., the position that would be visited
+           immediately before p in an inorder traversal), or None if p is the first position.
+after(p) : Return the position containing the least key that is greater than that of position p (i.e., the position that would be visited
+           immediately after p in an inorder traversal), or None if p is the last position.
+           
+The “first” position of a binary search tree can be located by starting a walk at the root and continuing to the left child, as long as a 
+left child exists. and same can be done to find out "last".
+
+The successor of a position, after(p), is determined by the following algorithm:
+
+Algorithm after(p):
+  if right(p) is not None then     {successor is leftmost position in p’s right subtree}
+    walk = right(p)
+    while left(walk) is not None do
+      walk = left(walk)
+    return walk
+  else                             {successor is nearest ancestor having p in its left subtree}
+    walk = p
+    ancestor = parent(walk)
+    while ancestor is not None and walk == right(ancestor) do
+      walk = ancestor
+      ancestor = parent(walk)
+    return ancestor
+    
+Running time of single call to after(p) or before(p) is bounded by the height h of the full tree, because it is found
+after either a single downward walk or a single upward walk. While the worst-case running time is O(h),
+we note that either of these methods run in O(1) amortized time, in that series of n calls to after(p) starting at the first position 
+will execute in a total of O(n) time.
+
+------------------------ 11.1.2 Searches:
+
+If key k occurs in a subtree rooted at p, a call to TreeSearch(T, p, k) results in the position at which the key
+is found; in this case, the getitem map operation would return the associated value at that position.
+
+In this function we are passing root Node position also
+
+Algorithm TreeSearch(T, p, k):
+  if k == p.key() then
+    return p {successful search}
+  else if k < p.key() and T.left(p) is not None then
+   return TreeSearch(T, T.left(p), k) {recur on left subtree}
+  else if k > p.key() and T.right(p) is not None then
+    return TreeSearch(T, T.right(p), k) {recur on right subtree}
+  return p {unsuccessful search}
+  
+ Analysis of Binary Tree Searching:
+ 
+ 
