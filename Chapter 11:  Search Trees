@@ -1,3 +1,10 @@
+In this chapter, we use a search tree structure to efficiently implement a sorted map.
+
+The three most fundamental methods of a map M are M[k] implemented with __getitem, M[k] = v using __setitem__ and del M[k]
+using __delitem__.
+
+Binary trees are an excellent data structure for storing items of a map, assuming we have an order relation defined on the keys.
+
 
 ----------------------------------------- 11.1 Binary Search Trees --------------------------------
 
@@ -45,20 +52,141 @@ will execute in a total of O(n) time.
 
 ------------------------ 11.1.2 Searches:
 
-If key k occurs in a subtree rooted at p, a call to TreeSearch(T, p, k) results in the position at which the key
-is found; in this case, the getitem map operation would return the associated value at that position.
-
-In this function we are passing root Node position also
+If key k occurs in a subtree rooted at p, a call to TreeSearch(T, p, k) results in the position at which the key is found; 
+in this case, the __getitem__ map operation would return the associated value at that position. In the event of an unsuccessful 
+search, the TreeSearch algorithm returns the final position explored on the search path.
 
 Algorithm TreeSearch(T, p, k):
-  if k == p.key() then
-    return p {successful search}
-  else if k < p.key() and T.left(p) is not None then
-   return TreeSearch(T, T.left(p), k) {recur on left subtree}
-  else if k > p.key() and T.right(p) is not None then
-    return TreeSearch(T, T.right(p), k) {recur on right subtree}
-  return p {unsuccessful search}
-  
- Analysis of Binary Tree Searching:
- 
- 
+           if k == p.key() then
+                      return p                                    {successful search}
+           else if k < p.key() and T.left(p) is not None then
+                      return TreeSearch(T, T.left(p), k)          {recur on left subtree}
+           else if k > p.key() and T.right(p) is not None then
+                      return TreeSearch(T, T.right(p), k)         {recur on right subtree}
+           return p                                               {unsuccessful search}
+
+Analysis of Binary Tree Searching:
+
+Algorithm TreeSearch is recursive and executes a constant number of primitive operations for each recursive call. Each recursive call 
+of TreeSearch is made on a child of the previous position. That is, TreeSearch is called on the positions of a path of T that starts 
+at the root and goes down one level at a time. Thus, the number of such positions is bounded by h+1, where h is the height of T.
+
+In other words, since we spend O(1) time per position encountered in the search, the overall search runs in O(h) time, where h is the 
+height of the binary search tree T.
+
+we can use this to implement sorted map ADT, for implementing the __getitem__ method, as well as for the __setitem__ and
+__delitem__ methods, since each of these begins by trying to locate an existing item with a given key.
+To implement sorted map operations such as find __lt__ and find __gt__, we will combine this search with traversal methods before and 
+after.
+All of these operations will run in worst-case O(h) time for a tree with height h. We can use a variation of this technique to implement
+the find range method in time O(s+h).
+
+The height h of T can be as large as the number of entries, n, but we expect that it is usually much smaller.(when all nodes are left
+or right nodes only)
+
+--------------------------- 11.1.3 Insertions and Deletions:
+
+Insertion:
+
+The map command M[k] = v, as supported by the __setitem__ method, begins with a search for key k (assuming the map is nonempty). 
+If found, that item’s existing value is reassigned. Otherwise, a node for the new item can be inserted into the underlying tree T in 
+place of the empty subtree that was reached at the end of the failed search.
+
+Algorithm TreeInsert(T, k, v):
+           Input: A search key k to be associated with value v
+           p = TreeSearch(T,T.root(),k)
+           if k == p.key() then
+                      Set p’s value to v
+           else if k < p.key() then
+                      add node with item (k,v) as left child of p
+           else
+                      add node with item (k,v) as right child of p
+                      
+Deletion:
+
+To delete an item with key k, we begin by calling TreeSearch(T, T.root( ), k) to find the position p of T storing an item with key equal
+to k. If the search is successful, we distinguish between two cases:
+
+• If p has at most one child, the deletion of the node at position p is easily implemented. When introducing update methods for the 
+LinkedBinaryTree class in Section 8.3.1, we declared a nonpublic utility, delete(p), that deletes a node at position p and replaces it 
+with its child (if any), presuming that p has at most one child. That is precisely the desired behavior. It removes the item with key k 
+from the map while maintaining all other ancestor-descendant relationships in the tree, thereby assuring the upkeep of the binary search
+tree property.
+• If position p has two children, we cannot simply remove the node from T since this would create a “hole” and two orphaned children. 
+Instead, we proceed as follows:
+
+           ◦ We locate position r containing the item having the greatest key that is strictly less than that of position p, that is,
+           r = before(p). Because p has two children, its predecessor is the rightmost position of the left subtree of p.
+           
+           ◦ We use r’s item as a replacement for the one being deleted at position p. Because r has the immediately preceding key in 
+           the map, any items in p’s right subtree will have keys greater than r and any other items in p’s left subtree will have keys 
+           less than r. Therefore, the binary search tree property is satisfied after the replacement.
+           
+           ◦ Having used r’s as a replacement for p, we instead delete the node at position r from the tree. Fortunately, since r was 
+           located as the rightmost position in a subtree, r does not have a right child. Therefore, its deletion can be performed using
+           the first approach.
+
+As with searching and insertion, this algorithm for a deletion involves the traversal of a single path downward from the root, possibly 
+moving an item between two positions of this path, and removing a node from that path and promoting its child. Therefore, it executes in
+time O(h) where h is the height of the tree.
+
+
+-------------------------------------- 11.1.4 Python Implementation:
+
+we define a TreeMap class that implementsc the sorted map ADT using a binary search tree.
+
+Our TreeMap class takes advantage of multiple inheritance for code reuse, inheriting from the LinkedBinaryTree class for our 
+representation as a positional binary tree, and from the MapBase class to provide us with the key-value composite item and the concrete
+behaviors from the collections.MutableMapping abstract base class.
+We subclass the nested Position class to support more specific p.key( ) and p.value( ) accessors for our map, rather than the 
+p.element( ) syntax inherited from the tree ADT.
+
+When making structural modifications to the tree, we rely on nonpublic update methods, such as add right, that are inherited from the
+LinkedBinaryTree class. 
+It is important that these inherited methods remain nonpublic, as the search tree property could be violated through misuse of such
+operations.
+
+our code is peppered with calls to presumed methods named _rebalance_insert, _rebalance_delete, and _rebalance_access. These methods
+serve as hooks for future use when balancing search trees.
+
+# See the Code
+
+Performance of a Binary Search Tree:
+
+Operation                                                Running Time
+k in T                                                 : O(h)
+T[k], T[k] = v                                         : O(h)
+T.delete(p), del T[k]                                  : O(h)
+T.find_position(k)                                     : O(h)
+T.first(), T.last( ), T.find_min(), T.find_max()       : O(h)
+T.before(p), T.after(p)                                : O(h)
+T.find_lt(k), T.find_le(k), T.find_gt(k), T.find_ge(k) : O(h)
+T.find_range(start, stop)                              : O(s+h)
+iter(T), reversed(T)                                   : O(n)
+
+A binary search tree T is therefore an efficient implementation of a map with n entries only if its height is small. In the best case, 
+T has height h= [log(n+1)]−1,
+which yields logarithmic-time performance for all the map operations.
+
+In the worst case, however, T has height n, in which case it would look and feel like an ordered list implementation of a map. 
+Such a worst-case configuration arises, for example, if we insert items with keys in increasing or decreasing order.
+
+10
+  \
+   20
+     \
+      30
+        \
+         40
+Example of a binary search tree with linear height, obtained by inserting entries with keys in increasing order.
+
+on average, a binary search tree with n keys generated from a random series of insertions and removals of keys has expected
+height O(logn).
+
+In applications where it's not sure that nature of updates will be random, it is better to rely on variations of search trees, 
+presented in the remainder of this chapter, that guarantee a worst-case height of O(logn), and thus O(logn) worstcase time for searches, 
+insertions, and deletions.
+
+
+
+--------------------------------------11.2 Balanced Search Trees ------------------------------------
