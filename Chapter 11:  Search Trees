@@ -206,8 +206,14 @@ subtree accordingly.
 Because a single rotation modifies a constant number of parent-child relationships, it can be implemented in O(1) time with a linked 
 binary tree representation.
 
-In the context of a tree-balancing algorithm, a rotation allows the shape of tree to be modified while maintaining the search tree 
-property.
+Rotation: In the context of a tree-balancing algorithm, a rotation allows the shape of tree to be modified while maintaining the search 
+tree property. A rotation can be performed to transform the left formation into the right, or the right formation into the left.
+
+                      y                                x
+                     / \      Rotation                / \
+                    x   T3    --------               T1  y
+                   / \                                  / \
+                  T1  T2                               T2  T3
 
 One or more rotations can be combined to provide broader rebalancing within a tree. One such compound operation we consider is a trinode 
 restructuring
@@ -221,8 +227,7 @@ Algorithm restructure(x):
            Output: Tree T after a trinode restructuring (which corresponds to a single or double rotation) involving positions x, y, 
                    and z
            1: Let (a, b, c) be a left-to-right (inorder) listing of the positions x, y, and z, and
-           let (T1,T2,T3,T4) be a left-to-right (inorder) listing of the four subtrees of x,
-           y, and z not rooted at x, y, or z.
+           let (T1,T2,T3,T4) be a left-to-right (inorder) listing of the four subtrees of x, y, and z not rooted at x, y, or z.
            2: Replace the subtree rooted at z with a new subtree rooted at b.
            3: Let a be the left child of b and let T1 and T2 be the left and right subtrees of a,
            respectively.
@@ -265,10 +270,75 @@ as a single rotation (as in Figure 11.9a and b) or as a double rotation.
     
 In any of the cases, the trinode restructuring is completed with O(1) running time.
 
--------------------------11.2.1 Python Framework for Balancing Search Trees:
+
+
+-------------------------------------11.2.1 Python Framework for Balancing Search Trees --------------------------------------------
+
+we designed TreeMap class to also serve as a base class for other subclasses that implement more advanced tree-balancing algorithms.
+A summary of our inheritance hierarchy:
+
+                                           LinkedBinaryTree                  MapBase
+                                                     |-------------------------|
+                                                                  |
+                                                                TreeMap
+                                           |----------------------|---------------------|
+                                        AVLTreeMap            SplayTreeMap           RedBlackTreeMap
+
+--------Hooks for Rebalancing Operations:
+
+Our implementation of the basic map operations in TreeMap Class includes strategic
+calls to three nonpublic methods that serve as hooks for rebalancing algorithms:
+• A call to rebalance insert(p) is made from within the setitem method
+immediately after a new node is added to the tree at position p.
+
+• A call to rebalance delete(p) is made each time a node has been deleted
+from the tree, with position p identifying the parent of the node that has just
+been removed. Formally, this hook is called from within the public delete(p)
+method, which is indirectly invoked by the public delitem (k) behavior.
+
+• We also provide a hook, rebalance access(p), that is called when an item at
+position p of a tree is accessed through a public method such as getitem .
+This hook is used by the splay tree structure (see Section 11.4) to restructure
+a tree so that more frequently accessed items are brought closer to the root.
+
+A trivial declaration is given in the TreeMap class but the actual implementation needs to be done in the subclasses
+
+------------Nonpublic Methods for Rotating and Restructuring:
+
+A second form of support for balanced search trees is our inclusion of nonpublic utility methods _rotate and _restructure that, 
+respectively, implement a single rotation and a trinode restructuring.
+
+These methods needs to be added in the TreeMap base class so that they are inherited by all balanced-tree subclasses.
+
+we define an additional _relink utility that properly links parent and child nodes to each other, including the special case in which a
+“child” is a None reference.
+
+
+-------------Factory for Creating Tree Nodes:
+
+The low-level definition of a node is provided by the nested _Node class within LinkedBinaryTree. Yet, several of our tree-balancing 
+strategies require that auxiliary information be stored at each node to guide the balancing process. Those classes will override the 
+nested _Node class to provide storage for an additional field.
+Whenever we add a new node to the tree as within the add_right method of the LinkedBinaryTree (originally given in Code Fragment 8.10),
+we intentionally instantiate the node using the syntax self._Node, rather than the qualified name LinkedBinaryTree._Node. 
+This is vital to our framework! When the expression self._Node is applied to an instance of a tree (sub)class, Python’s name resolution
+follows the inheritance structure (as described in Section 2.5.2). 
+If a subclass has overridden the definition for the Node class, instantiation of self._Node relies on the newly defined node class. 
+This technique is an example of the factory method design pattern, as we provide a subclass the means to control the type of node that
+is created within methods of the parent class.
+
+""" in simple words: our node class is already define in the LinkedBinarytree class, but we want to modify that as we need some 
+sdditional things in our Node class. so what we do is we override the node class in our subclass which will override the parent node 
+class.
+So in the add_right methond of the linkedBinaryTree class while using the node we use it using self._node rather than 
+LinkedBinaryTree._Node by doing so it will follow the inheritance structure i.e. it will use the node class of subclass rather then the
+original class. This is called factory method design pattern. """
+
+# See the code
 
 
 
+--------------------------------------------------- 11.3 AVL Trees -------------------------------------------------------------------
 
 
 
