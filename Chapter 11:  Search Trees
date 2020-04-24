@@ -189,4 +189,88 @@ insertions, and deletions.
 
 
 
---------------------------------------11.2 Balanced Search Trees ------------------------------------
+------------------------------------------------ 11.2 Balanced Search Trees ------------------------------------------------------
+
+In a normal Binary serach tree we saw that if random series of insertions and removals, the standard binary search tree supports O(logn)
+expected running times for the basic map operations. However, we may only claim O(n) worst-case time, because some sequences of 
+operations may lead to an unbalanced tree with height proportional to n.
+
+we explore four search tree algorithms that provide stronger performance guarantees. 
+Three of the four data structures (AVL trees, splay trees, and red-black trees) are based on augmenting a standard binary
+search tree with occasional operations to reshape the tree and reduce its height.
+
+The primary operation to rebalance a binary search tree is known as a rotation. 
+During a rotation, we “rotate” a child to be above its parent but To maintain the binary search tree property we have to adjust the 
+subtree accordingly.
+
+Because a single rotation modifies a constant number of parent-child relationships, it can be implemented in O(1) time with a linked 
+binary tree representation.
+
+In the context of a tree-balancing algorithm, a rotation allows the shape of tree to be modified while maintaining the search tree 
+property.
+
+One or more rotations can be combined to provide broader rebalancing within a tree. One such compound operation we consider is a trinode 
+restructuring
+
+Trinode Restructuring: 
+For this manipulation, we consider a position x, its parent y, and its grandparent z. The goal is to restructure the subtree rooted at 
+z in order to reduce the overall path length to x and its subtrees.
+
+Algorithm restructure(x):
+           Input : A position x of a binary search tree T that has both a parent y and a grandparent z
+           Output: Tree T after a trinode restructuring (which corresponds to a single or double rotation) involving positions x, y, 
+                   and z
+           1: Let (a, b, c) be a left-to-right (inorder) listing of the positions x, y, and z, and
+           let (T1,T2,T3,T4) be a left-to-right (inorder) listing of the four subtrees of x,
+           y, and z not rooted at x, y, or z.
+           2: Replace the subtree rooted at z with a new subtree rooted at b.
+           3: Let a be the left child of b and let T1 and T2 be the left and right subtrees of a,
+           respectively.
+           4: Let c be the right child of b and let T3 and T4 be the left and right subtrees of
+           c, respectively.
+
+In practice, the modification of a tree T caused by a trinode restructuring operation can be implemented through case analysis either
+as a single rotation (as in Figure 11.9a and b) or as a double rotation.
+           z(a)                                                              y(b)
+          / \                                                               /   \                                                                                                                              
+         T1  y(b)             single roration                             z(a)   x(c)   
+            / \               ----------------                            /  \    /  \
+           T2  x(c)                                                      T1  T2  T3   T4
+              / \
+              T3 T4
+
+           z(c)                                                           y(b)
+          / \                                                            /   \                                                                                                                              
+        y(b) T4            single roration                             x(a)   z(c)   
+        / \               ----------------                            /  \    /  \
+     x(a)  T3                                                        T1  T2  T3   T4
+     / \
+    T1 T2
+
+           z(a)                                                           x(b)
+          / \                                                            /   \                                                                                                                              
+        T1  y(c)          double roration                             z(a)   y(c)   
+            / \               ----------------                       /  \    /  \
+          x(b)  T4                                                  T1  T2  T3   T4
+          / \
+         T2 T3
+
+          z(c)                                                           x(b)
+          / \                                                            /   \                                                                                                                              
+        y(a)  T4        double roration                                y(a)   z(c)   
+        / \               ----------------                            /  \    /  \
+      T1  x(b)                                                       T1  T2  T3   T4
+          / \
+         T2 T3
+    
+In any of the cases, the trinode restructuring is completed with O(1) running time.
+
+-------------------------11.2.1 Python Framework for Balancing Search Trees:
+
+
+
+
+
+
+
+
