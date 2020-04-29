@@ -340,6 +340,132 @@ original class. This is called factory method design pattern. """
 
 --------------------------------------------------- 11.3 AVL Trees -------------------------------------------------------------------
 
+AVL tree is a self-balancing Binary Search Tree (BST) where the difference between heights of left and right subtrees cannot be more than 
+one for all nodes
+
+Height-Balance Property: For every position p of T, the heights of the children of p differ by atmost 1.
+
+Balance factor: of any node of an AVL tree is the difference between the height of the left subtree and the right subtree.
+
+BF for AVL tree should be in range [-1,+1].
+
+
+
+Because of the self balancing property, The height of an AVL tree storing n entries is O(logn).
+
+--------------------11.3.1 Update Operations-------------
+
+The insertion and deletion operations for AVL trees begin similarly to the corresponding
+operations for (standard) binary search trees, but with post-processing for
+each operation to restore the balance
+
+
+----------------------- Insertion:
+
+first we will insert a node in the tree and then we restore the balance of the nodes in the binary search tree T by a simple “search-and-repair” strategy. 
+In particular, let z be the first position we encounter in going up from p toward the root of T such that z is unbalanced. Then by performing rotation
+single rotation or double rotation or trinode restructuring, we will try to balance that node, and all these nodes should be the ancester of the position P
+once the unbalaced node is balanced we move to substiqueint node and check their balancing.
+
+
+
+----------------------- Deletion:
+
+After performing the deletion, if position p represents the parent of the removed node in tree T, there may be an unbalanced node on the path from p to the root of T.
+
+let z be the first unbalanced position encountered going up from p toward the root of T.
+ Also, let y be the child of z with larger height (note that position y may or may not be the ancester of P, here it is the child of z that is not an ancestor of p), 
+Now let x be the child of y defined as follows: 
+    If one of the children of y is taller than the other, let x be the taller child of y; 
+    else (both children of y have the same height), let x be the child of y on the same side as y (that is, if y is the left child of z, let x be the left child of y, else let x be the right child of y). In any case, we then perform a restructure(x)
+
+this trinode restructuring may reduce the height of the subtree rooted at b by 1, which may cause an ancestor of b to become unbalanced.
+So, after rebalancing z, we continue walking up T looking for unbalanced positions. 
+If we find another, we perform a restructure operation to restore its balance, and continue marching up T looking for more, all the way to the root
+
+--------------------------- Performance of AVL Trees:
+Worst-case running times of operations for an n-item sorted map realized as an AVL tree T
+
+Operation                                              Running Time
+k in T                                                 : O(logn)
+T[k] = v                                               : O(logn)
+T.delete(p), del T[k]                                  : O(logn)
+T.find_position(k)                                     : O(logn)
+T.first(), T.last( ), T.find_min(), T.find_max()       : O(logn)
+T.before(p), T.after(p)                                : O(logn)
+T.find_lt(k), T.find_le(k), T.find_gt(k), T.find_ge(k) : O(logn)
+T.find_range(start, stop)                              : O(s+logn)
+iter(T), reversed(T)                                   : O(n)
+
+-------Python Implementation:
+
+#see the code
+
+
+---------------------------------------- 11.4 Splay Trees-------------------------------------------------------------------
+
+In Splay tree we move the position to the root on which we just had performed any of the operations like insert, serach or delete(in delete we will perform the it on the last node which we traverse just before the deteing node)
+
+------------------------- Splaying:
+
+The specific operation we perform to move x up depends upon the relative positions of x, its parent y, and (if it exists) x’s grandparent z. There are
+three cases that we consider.
+
+If there is no gradparent of the splaying node and Splaying needs to be done only between the two Nodes
+
+Zig :  x does not have a grandparent. In this case, we perform a single rotation to promote x over y, making y a child of x, while maintaining
+       the relative inorder relationships of the nodes in T. it's like there is a nail at node y and from left or right we are pulling tree over that node until next node comes to a y position
+       
+          10(y)                                           20          
+         /  \               Zig-left                      /           
+        T1   20(x)          -------->                    10        
+             /\             <--------                   /\       
+            T2 T3           Zig-Right                  T1 T2   
+
+
+If Grandparent is present
+
+Zig - Zig: The node x and its parent y are both left children or both right children. We promote x, making y a child of x and z a child of y, while           maintaining the inorder relationships of the nodes in T.
+           this can be visulize as if we are pulling the tree towards left and having a hook at node z, and we have to do this two times (one time shift is also called zig so that's why this is called Zig - Zig.)
+           
+          (Z)
+          10                                              20                                    30
+         /  \               Zig-left                      / \          Zig-left                 /\
+        T1   20(y)          -------->                   10   30       ---------->              20 T4
+             /\             <--------                   /\   / \     <----------               /\
+            T2 30(x)        Zig-Right                  T1 T2 T3 T4    Zig-Right               10 T3
+               /\                                                                             /\
+             T3  T4                                                                          T1 T2
+
+
+zig-zag: One of x and y is a left child and the other is a right child. In this case, we promote x by making x have y and z as its children,
+         while maintaining the inorder relationships of the nodes in T.(shortcut)
+         What we actually do is, first we make a zig - left or Zig -right between the X and Y and then perform the another rotation which will b the opposite of first rotation that's why called zag, between the node x and node Z.
+         
+         
+          (Z)                                             (Z)
+          10                                              10                                      20
+         /  \               Zig(right) bw x and y        /  \          Zag(left) bw x and Z      /   \
+        T1   30(y)          -------->                   T1   20(x)    ---------->              10    30
+             / \                                             / \                              / \    / \
+           20(x) T4                                         T2 30(Y)                         T1 T2  T3 T4
+           /\                                                  /\                           
+         T2  T3                                               T3 T4                               
+
+
+
+We perform a zig-zig or a zig-zag when x has a grandparent, and we perform a zig when x has a parent but not a grandparent. A splaying step consists of repeating these restructurings at x until x becomes the root of T.
+
+
+----------------------- 11.4.2 When to Splay:
+
+1. When searching for key k, if k is found at position p, we splay p, else we splay the leaf position at which the search terminates unsuccessfully.
+2. When inserting key k, we splay the newly created internal node where k gets inserted.
+3. When deleting a key k, we splay the position p that is the parent of the removed node; recall that by the removal algorithm for binary search        trees, the removed node may be that originally containing k, or a descendant node with a replacement key.
+
+---------------------- Python Implementation:
+
+#See the code
 
 
 
